@@ -23,11 +23,11 @@ export default class BulletinPost {
     }
   
     set title(newTitle: string) {
-      this._title = newTitle;
+      newTitle.length > 50 ? this._title = newTitle.substring(0,50) : this._title = newTitle;
     }
 
     set text(newText: string) {
-      this._text = newText;
+      newText.length > 300 ? this._title = newText.substring(0,50) : this._title = newText;
     }
   
     get text() {
