@@ -1,14 +1,11 @@
 import { Schema, model, Model } from 'mongoose';
-import BulletinPost from '../../types/BulletinPost';
+import ServerBulletinPost from '../../types/BulletinPost';
 
-// mongo sets a unique _id for each item in a collection
-// TODO: do we want to use mongo's default id or set our own?
-const PostSchema = new Schema<BulletinPost>({
+const PostSchema = new Schema<ServerBulletinPost>({
   title: { type: String, required: true },
   text: { type: String, required: true },
   author: { type: String, required: true },
-  creationTime: { type: Number, required: true },
-}, { collection: 'users' });
+}, { collection: 'bulletin_posts' });
 
-const PostModel: Model<BulletinPost> = model<BulletinPost>('BulletinPost', PostSchema);
+const PostModel: Model<ServerBulletinPost> = model<ServerBulletinPost>('BulletinPost', PostSchema);
 export default PostModel;

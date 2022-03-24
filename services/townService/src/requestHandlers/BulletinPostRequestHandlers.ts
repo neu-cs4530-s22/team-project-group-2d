@@ -1,20 +1,22 @@
 import { Schema } from 'mongoose';
-import BulletinPost from '../types/BulletinPost';
 import { createPost, deletePost, findAllPosts } from '../models/posts/dao';
 import { ResponseEnvelope } from './CoveyTownRequestHandlers';
+import { PostCreateRequest } from '../CoveyTypes';
+import ServerBulletinPost from '../types/BulletinPost';
+
 
 /**
  * Response from the server for a BulletinPost create request
  */
 export interface PostCreateResponse {
-  postID: Schema.Types.ObjectId | undefined; // TODO shouldn't undefined - doing for stubs
+  post: ServerBulletinPost | undefined; // TODO remove undefined - using for stubs
 }
 
 /**
  * Response from the server for a BulletinPost list request
  */
 export interface PostListResponse {
-  towns: BulletinPost[];
+  towns: ServerBulletinPost[];
 }
 
 /**
@@ -25,12 +27,12 @@ export interface PostDeleteRequest {
   coveyTownPassword: string;
 }
 
-export function postCreateHandler(requestData: BulletinPost): ResponseEnvelope<PostCreateResponse> {
+export function postCreateHandler(requestData: PostCreateRequest): ResponseEnvelope<PostCreateResponse> {
   createPost(requestData);
   return {
     isOK: true,
     response: {
-      postID: undefined,
+      post: undefined,
     },
   };
 }

@@ -1,13 +1,18 @@
+import { Schema } from 'mongoose';
+
 export default class ServerBulletinPost {
+  private _id: Schema.Types.ObjectId;
+
   private _author: string;
 
   private _title: string;
 
   private _text: string;
 
-  private _creationTime: number;
+  private _createdAt: Date;
 
-  constructor(author: string, title: string, text: string) {
+  constructor(id: Schema.Types.ObjectId, author: string, title: string, text: string, createdAt: Date) {
+    this._id = id;
     this._author = author;
     if (title.length > 50) {
       this._title = title.substring(0, 50);
@@ -19,7 +24,11 @@ export default class ServerBulletinPost {
     } else {
       this._text = text;
     }
-    this._creationTime = Date.now();
+    this._createdAt = createdAt;
+  }
+
+  get id(): Schema.Types.ObjectId {
+    return this._id;
   }
 
   get author(): string {
@@ -50,7 +59,7 @@ export default class ServerBulletinPost {
     return this._text;
   }
 
-  get creationTime(): number {
-    return this._creationTime;
+  get createdAt(): Date {
+    return this._createdAt;
   }
 }
