@@ -6,7 +6,8 @@ import { BulletinPost } from '../../CoveyTypes';
 const PostSchema = new Schema<BulletinPost>({
   title: { type: String, required: true },
   text: { type: String, required: true },
-  createdAt: { type: Number, required: true },
+  author: { type: String, required: true },
+  creationTime: { type: Number, required: true },
 }, { collection: 'users' });
 
 const PostModel: Model<BulletinPost> = model<BulletinPost>('BulletinPost', PostSchema);

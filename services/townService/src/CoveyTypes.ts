@@ -18,5 +18,6 @@ export type ChatMessage = {
 export type BulletinPost = {
   title: string,
   text: string,
-  createdAt: number,
+  author: string,
+  creationTime: number,
 };
