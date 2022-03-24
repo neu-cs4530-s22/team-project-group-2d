@@ -10,7 +10,7 @@ export default class ServerBulletinBoard {
     this._boundingBox = boundingBox;
   }
 
-  get posts() {
+  get posts(): ServerBulletinPost[] {
     return this._posts;
   }
 
@@ -22,11 +22,11 @@ export default class ServerBulletinBoard {
     return this._boundingBox;
   }
 
-  addPost(post: BulletinPost) {
+  addPost(post: ServerBulletinPost): void {
     this._posts.push(post);
   }
 
-  sortPostsByTime() {
+  sortPostsByTime(): void {
     this._posts.sort((a, b) => a.creationTime - b.creationTime);
   }
 }
