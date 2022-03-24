@@ -14,3 +14,9 @@ export type ChatMessage = {
   body: string;
   dateCreated: Date;
 };
+
+export type BulletinPost = {
+  title: string,
+  text: string,
+  createdAt: number,
+};

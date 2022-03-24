@@ -1,19 +1,23 @@
 import { Schema } from 'mongoose';
-import postModel from './model';
-import { BulletinPost } from '../../types/BulletinPost';
+import PostModel from './model';
+import { BulletinPost } from '../../CoveyTypes';
 
-export function createPost(post: BulletinPost) {
-  return postModel.create(post);
+export async function createPost(post: BulletinPost) : Promise<BulletinPost> {
+  const response: BulletinPost = await PostModel.create(post);
+  return response;
 } 
 
-export function deletePost(id: Schema.Types.ObjectId) {
-  return postModel.deleteOne({ _id:  id });
+// TODO change return type?
+export async function deletePost(id: Schema.Types.ObjectId) : Promise<void> {
+  await PostModel.deleteOne({ _id:  id });
 } 
 
-export function findPostById(id: Schema.Types.ObjectId) {
-  return postModel.findById(id);
+export async function findPostById(id: Schema.Types.ObjectId) : Promise<BulletinPost | null> {
+  const response: BulletinPost | null = await PostModel.findById(id);
+  return response;
 } 
 
-export function findAllPosts() {
-  return postModel.find();
+export async function findAllPosts() : Promise<BulletinPost[]> {
+  const response: BulletinPost[] = await PostModel.find();
+  return response;
 } 
