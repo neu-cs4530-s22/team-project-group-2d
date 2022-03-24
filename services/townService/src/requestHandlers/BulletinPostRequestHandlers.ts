@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose';
-import { BulletinPost } from '../CoveyTypes';
+import BulletinPost from '../types/BulletinPost';
 import { createPost, deletePost, findAllPosts } from '../models/posts/dao';
 import { ResponseEnvelope } from './CoveyTownRequestHandlers';
 

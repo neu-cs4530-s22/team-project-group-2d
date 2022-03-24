@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose';
 import PostModel from './model';
-import { BulletinPost } from '../../CoveyTypes';
+import BulletinPost from '../../types/BulletinPost';
 
 export async function createPost(post: BulletinPost) : Promise<BulletinPost> {
   const response: BulletinPost = await PostModel.create(post);

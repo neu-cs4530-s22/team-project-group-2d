@@ -1,5 +1,5 @@
 import { Schema, model, Model } from 'mongoose';
-import { BulletinPost } from '../../CoveyTypes';
+import BulletinPost from '../../types/BulletinPost';
 
 // mongo sets a unique _id for each item in a collection
 // TODO: do we want to use mongo's default id or set our own?
