@@ -23,7 +23,7 @@ export default class BulletinBoard {
   }
 
   addPost(post: BulletinPost) {
-      this._posts.push(post);
+    this._posts.push(post);
   }
 
   sortPostsByTime() {

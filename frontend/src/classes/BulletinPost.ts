@@ -27,14 +27,14 @@ export default class BulletinPost {
     }
 
     set text(newText: string) {
-        this._text = newText;
-      }
+      this._text = newText;
+    }
   
     get text() {
       return this._text;
     }
 
     get creationTime() {
-        return this._creationTime;
+      return this._creationTime;
     }
   }
