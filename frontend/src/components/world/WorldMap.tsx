@@ -298,7 +298,7 @@ class CoveyGameScene extends Phaser.Scene {
         this.lastLocation.rotation = primaryDirection || 'front';
         this.lastLocation.moving = isMoving;
         if (this.currentConversationArea) {
-          if(this.currentConversationArea.conversationArea){
+          if (this.currentConversationArea.conversationArea) {
             this.lastLocation.conversationLabel = this.currentConversationArea.label;
           }
           if (
@@ -377,6 +377,7 @@ class CoveyGameScene extends Phaser.Scene {
       // the map
     });
 
+    // conversation area code
     const conversationAreaObjects = map.filterObjects(
       'Objects',
       obj => obj.type === 'conversation',
@@ -417,6 +418,39 @@ class CoveyGameScene extends Phaser.Scene {
         this.game.scale.width / 2,
         this.game.scale.height / 2,
         "You've found an empty conversation area!\nTell others what you'd like to talk about here\nby providing a topic label for the conversation.\nSpecify a topic by pressing the spacebar.",
+        { color: '#000000', backgroundColor: '#FFFFFF' },
+      )
+      .setScrollFactor(0)
+      .setDepth(30);
+    this.infoTextBox.setVisible(false);
+    this.infoTextBox.x = this.game.scale.width / 2 - this.infoTextBox.width / 2;
+
+    // bulletin board code
+    const bulletinBoardRangeObject = map.filterObjects('Objects', obj => obj.type === 'bulletin');
+    const bulletinBoardRangeSprite = map.createFromObjects(
+      'Objects',
+      bulletinBoardRangeObject.map(obj => ({ id: obj.id })),
+    );
+
+    this.physics.world.enable(bulletinBoardRangeSprite);
+    bulletinBoardRangeSprite.forEach(bulletinBoardRange => {
+      const bulletinSprite = bulletinBoardRange as Phaser.GameObjects.Sprite;
+      bulletinSprite.y += bulletinSprite.displayHeight;
+      const labelText = this.add.text(
+        bulletinSprite.x - bulletinSprite.displayWidth / 2,
+        bulletinSprite.y - bulletinSprite.displayHeight / 2,
+        'Bulletin Board',
+        { color: '#FFFFFF', backgroundColor: '#000000' },
+      );
+      bulletinSprite.setTintFill();
+      bulletinSprite.setAlpha(0.3);
+    });
+
+    this.infoTextBox = this.add
+      .text(
+        this.game.scale.width / 2,
+        this.game.scale.height / 2,
+        'Press x to view the bulletin board',
         { color: '#000000', backgroundColor: '#FFFFFF' },
       )
       .setScrollFactor(0)
@@ -524,6 +558,9 @@ class CoveyGameScene extends Phaser.Scene {
         }
       },
     );
+    this.physics.add.overlap(sprite, bulletinBoardRangeSprite, () => {
+      this.infoTextBox?.setVisible(true);
+    });
 
     this.emitMovement({
       rotation: 'front',
@@ -625,7 +662,7 @@ class CoveyGameScene extends Phaser.Scene {
   pause() {
     if (!this.paused) {
       this.paused = true;
-      if(this.player){
+      if (this.player) {
         this.player?.sprite.anims.stop();
         const body = this.player.sprite.body as Phaser.Physics.Arcade.Body;
         body.setVelocity(0);
