@@ -266,6 +266,17 @@
                  "width":164.667,
                  "x":3482.99983333333,
                  "y":1058.66666666667
+                }, 
+                {
+                 "height":126.570995632409,
+                 "id":38,
+                 "name":"Bulletin Board Range",
+                 "rotation":0,
+                 "type":"bulletin",
+                 "visible":true,
+                 "width":128.353685711739,
+                 "x":1759.51510829842,
+                 "y":928.781531330778
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -274,7 +285,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":32,
+ "nextobjectid":39,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.8.2",
