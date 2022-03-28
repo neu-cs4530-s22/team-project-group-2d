@@ -34,6 +34,8 @@ class CoveyGameScene extends Phaser.Scene {
 
   private conversationAreas: ConversationGameObjects[] = [];
 
+  private bulletinAreas: Phaser.GameObjects.Sprite[] = [];
+
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys[] = [];
 
   /*
@@ -56,6 +58,8 @@ class CoveyGameScene extends Phaser.Scene {
   private currentConversationArea?: ConversationGameObjects;
 
   private infoTextBox?: Phaser.GameObjects.Text;
+
+  private bulletinInfoTextBox?: Phaser.GameObjects.Text;
 
   private setNewConversation: (conv: ConversationArea) => void;
 
@@ -312,6 +316,14 @@ class CoveyGameScene extends Phaser.Scene {
             this.lastLocation.conversationLabel = undefined;
           }
         }
+        if (this.bulletinAreas.length > 0 &&
+          !Phaser.Geom.Rectangle.Overlaps(
+            this.bulletinAreas[0].getBounds(),
+            this.player.sprite.getBounds(),
+          )
+        ) {
+          this.bulletinInfoTextBox?.setVisible(false);
+        }
         this.emitMovement(this.lastLocation);
       }
     }
@@ -426,27 +438,28 @@ class CoveyGameScene extends Phaser.Scene {
     this.infoTextBox.x = this.game.scale.width / 2 - this.infoTextBox.width / 2;
 
     // bulletin board code
-    const bulletinBoardRangeObject = map.filterObjects('Objects', obj => obj.type === 'bulletin');
-    const bulletinBoardRangeSprite = map.createFromObjects(
+    const bulletinAreaTiledObject = map.filterObjects('Objects', obj => obj.type === 'bulletin');
+    const bulletinAreaPhaserObject = map.createFromObjects(
       'Objects',
-      bulletinBoardRangeObject.map(obj => ({ id: obj.id })),
+      bulletinAreaTiledObject.map(obj => ({ id: obj.id })),
     );
 
-    this.physics.world.enable(bulletinBoardRangeSprite);
-    bulletinBoardRangeSprite.forEach(bulletinBoardRange => {
-      const bulletinSprite = bulletinBoardRange as Phaser.GameObjects.Sprite;
-      bulletinSprite.y += bulletinSprite.displayHeight;
-      const labelText = this.add.text(
-        bulletinSprite.x - bulletinSprite.displayWidth / 2,
-        bulletinSprite.y - bulletinSprite.displayHeight / 2,
-        'Bulletin Board',
-        { color: '#FFFFFF', backgroundColor: '#000000' },
-      );
-      bulletinSprite.setTintFill();
-      bulletinSprite.setAlpha(0.3);
+    this.physics.world.enable(bulletinAreaPhaserObject);
+    bulletinAreaPhaserObject.forEach(bulletinArea => {
+      this.bulletinAreas.push(bulletinArea as Phaser.GameObjects.Sprite);
     });
+    const currBulletinArea = this.bulletinAreas[0];
+    currBulletinArea.y += currBulletinArea.displayHeight;
+    const labelText = this.add.text(
+      currBulletinArea.x - currBulletinArea.displayWidth / 2,
+      currBulletinArea.y - currBulletinArea.displayHeight / 2,
+      'Bulletin Board',
+      { color: '#FFFFFF', backgroundColor: '#000000' },
+    );
+    currBulletinArea.setTintFill();
+    currBulletinArea.setAlpha(0.3);
 
-    this.infoTextBox = this.add
+    this.bulletinInfoTextBox = this.add
       .text(
         this.game.scale.width / 2,
         this.game.scale.height / 2,
@@ -455,8 +468,8 @@ class CoveyGameScene extends Phaser.Scene {
       )
       .setScrollFactor(0)
       .setDepth(30);
-    this.infoTextBox.setVisible(false);
-    this.infoTextBox.x = this.game.scale.width / 2 - this.infoTextBox.width / 2;
+    this.bulletinInfoTextBox.setVisible(false);
+    this.bulletinInfoTextBox.x = this.game.scale.width / 2 - this.bulletinInfoTextBox.width / 2;
 
     const labels = map.filterObjects('Objects', obj => obj.name === 'label');
     labels.forEach(label => {
@@ -558,8 +571,8 @@ class CoveyGameScene extends Phaser.Scene {
         }
       },
     );
-    this.physics.add.overlap(sprite, bulletinBoardRangeSprite, () => {
-      this.infoTextBox?.setVisible(true);
+    this.physics.add.overlap(sprite, bulletinAreaPhaserObject, () => {
+      this.bulletinInfoTextBox?.setVisible(true);
     });
 
     this.emitMovement({
