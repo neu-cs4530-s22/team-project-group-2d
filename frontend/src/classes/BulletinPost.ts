@@ -9,8 +9,16 @@ export default class BulletinPost {
   
     constructor(author: string, title: string, text: string) {
       this._author = author;
-      title.length > 50 ? this._title = title.substring(0,50) : this._title = title;
-      text.length > 300 ? this._text = text.substring(0, 300) : this._text = text;
+      if (title.length > 50) {
+       this._title = title.substring(0, 50);
+     } else {
+       this._title = title;
+     }
+     if (text.length > 50) {
+       this._text = text.substring(0, 300);
+     } else {
+       this._text = text;
+     }
       this._creationTime = Date.now();
     }
   
@@ -23,11 +31,19 @@ export default class BulletinPost {
     }
   
     set title(newTitle: string) {
-      newTitle.length > 50 ? this._title = newTitle.substring(0,50) : this._title = newTitle;
+      if (newTitle.length > 50) {
+       this._title = newTitle.substring(0, 50);
+     } else {
+       this._title = newTitle;
+     }
     }
 
     set text(newText: string) {
-      newText.length > 300 ? this._title = newText.substring(0,50) : this._title = newText;
+      if (newText.length > 300) {
+       this._text = newText.substring(0, 300);
+     } else {
+       this._text = newText;
+     }
     }
   
     get text() {
