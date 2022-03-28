@@ -19,7 +19,7 @@ export default class ServerBulletinPost {
     } else {
       this._title = title;
     }
-    if (text.length > 50) {
+    if (text.length > 300) {
       this._text = text.substring(0, 50);
     } else {
       this._text = text;
@@ -48,8 +48,8 @@ export default class ServerBulletinPost {
   }
 
   set text(newText: string) {
-    if (newText.length > 50) {
-      this._text = newText.substring(0, 50);
+    if (newText.length > 300) {
+      this._text = newText.substring(0, 300);
     } else {
       this._text = newText;
     }
