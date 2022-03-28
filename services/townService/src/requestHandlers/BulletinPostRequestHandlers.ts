@@ -1,5 +1,5 @@
 import { Schema } from 'mongoose';
-import { createPost, deletePost, findAllPosts } from '../models/posts/dao';
+import { createPost, deletePost, findAllPosts, findAllPostsInTown } from '../models/posts/dao';
 import { ResponseEnvelope } from './CoveyTownRequestHandlers';
 import { PostCreateRequest } from '../CoveyTypes';
 import ServerBulletinPost from '../types/BulletinPost';
@@ -47,6 +47,16 @@ export function postDeleteHandler(requestData: PostDeleteRequest): ResponseEnvel
 
 export function postListHandler(): ResponseEnvelope<PostListResponse> {
   findAllPosts();
+  return {
+    isOK: true,
+    response: {
+      towns: [],
+    },
+  };
+}
+
+export function postListByTownHandler(townID: string): ResponseEnvelope<PostListResponse> {
+  findAllPostsInTown(townID);
   return {
     isOK: true,
     response: {

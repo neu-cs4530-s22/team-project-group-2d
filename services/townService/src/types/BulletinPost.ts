@@ -9,9 +9,11 @@ export default class ServerBulletinPost {
 
   private _text: string;
 
-  private _createdAt: Date;
+  private _createdAt: number;
 
-  constructor(id: Schema.Types.ObjectId, author: string, title: string, text: string, createdAt: Date) {
+  private _coveyTownID: string;
+
+  constructor(id: Schema.Types.ObjectId, author: string, title: string, text: string, createdAt: number, coveyTownID: string) {
     this._id = id;
     this._author = author;
     if (title.length > 50) {
@@ -25,6 +27,7 @@ export default class ServerBulletinPost {
       this._text = text;
     }
     this._createdAt = createdAt;
+    this._coveyTownID = coveyTownID;
   }
 
   get id(): Schema.Types.ObjectId {
@@ -59,7 +62,11 @@ export default class ServerBulletinPost {
     return this._text;
   }
 
-  get createdAt(): Date {
+  get createdAt(): number {
     return this._createdAt;
+  }
+
+  get coveyTownID() : string {
+    return this._coveyTownID;
   }
 }

@@ -1,25 +1,37 @@
+import { Schema } from 'mongoose';
+
 export default class BulletinPost {
+    private _id: Schema.Types.ObjectId;
+
     private _author: string;
   
     private _title: string;
   
     private _text: string;
   
-    private _creationTime: number;
+    private _createdAt: number;
+
+    private _coveyTownID: string;
   
-    constructor(author: string, title: string, text: string) {
+    constructor(id: Schema.Types.ObjectId, author: string, title: string, text: string, createdAt: number, coveyTownID: string) {
+      this._id = id;
       this._author = author;
       if (title.length > 50) {
        this._title = title.substring(0, 50);
-     } else {
-       this._title = title;
-     }
-     if (text.length > 50) {
-       this._text = text.substring(0, 300);
-     } else {
-       this._text = text;
-     }
-      this._creationTime = Date.now();
+      } else {
+        this._title = title;
+      }
+      if (text.length > 300) {
+        this._text = text.substring(0, 300);
+      } else {
+        this._text = text;
+      }
+      this._createdAt = createdAt;
+      this._coveyTownID = coveyTownID
+    }
+
+    get id(): Schema.Types.ObjectId {
+      return this._id;
     }
   
     get author() {
@@ -31,13 +43,6 @@ export default class BulletinPost {
     }
   
     set title(newTitle: string) {
-<<<<<<< HEAD
-      newTitle.length > 50 ? this._title = newTitle.substring(0,50) : this._title = newTitle;
-    }
-
-    set text(newText: string) {
-      newText.length > 300 ? this._title = newText.substring(0,50) : this._title = newText;
-=======
       if (newTitle.length > 50) {
        this._title = newTitle.substring(0, 50);
      } else {
@@ -51,18 +56,17 @@ export default class BulletinPost {
      } else {
        this._text = newText;
      }
->>>>>>> de52f1861512b68ace0b2526813c5e470376ba3c
     }
   
     get text() {
       return this._text;
     }
 
-    get creationTime() {
-      return this._creationTime;
+    get createdAt() {
+      return this._createdAt;
     }
-<<<<<<< HEAD
+
+    get coveyTownID() {
+      return this._coveyTownID;
+    }
   }
-=======
-  }
->>>>>>> de52f1861512b68ace0b2526813c5e470376ba3c

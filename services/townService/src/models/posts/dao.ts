@@ -22,3 +22,8 @@ export async function findAllPosts() : Promise<ServerBulletinPost[]> {
   const response: ServerBulletinPost[] = await PostModel.find();
   return response;
 } 
+
+export async function findAllPostsInTown(townID: string) : Promise<ServerBulletinPost[]> {
+  const response: ServerBulletinPost[] = await PostModel.find({ coveyTownID: townID });
+  return response;
+} 

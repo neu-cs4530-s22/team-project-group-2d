@@ -11,7 +11,7 @@ export default function addPostRoutes(http: Server, app: Express): io.Server {
   });
 
   /**
-   * Delete a town
+   * Delete a post
    */
   app.delete('/posts/:postID', express.json(), async () => {
     
@@ -21,6 +21,13 @@ export default function addPostRoutes(http: Server, app: Express): io.Server {
    * List all posts
    */
   app.get('/posts', express.json(), async () => {
+    
+  });
+
+  /**
+   * List all posts for a town
+   */
+  app.get('/posts/:townID', express.json(), async () => {
     
   });
   
