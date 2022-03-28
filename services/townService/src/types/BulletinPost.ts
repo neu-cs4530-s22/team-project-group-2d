@@ -22,7 +22,7 @@ export default class ServerBulletinPost {
       this._title = title;
     }
     if (text.length > 300) {
-      this._text = text.substring(0, 50);
+      this._text = text.substring(0, 300);
     } else {
       this._text = text;
     }
