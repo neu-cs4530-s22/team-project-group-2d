@@ -9,11 +9,11 @@ export default class BulletinPost {
   
     private _text: string;
   
-    private _createdAt: number;
+    private _createdAt: Date;
 
     private _coveyTownID: string;
   
-    constructor(id: Schema.Types.ObjectId, author: string, title: string, text: string, createdAt: number, coveyTownID: string) {
+    constructor(id: Schema.Types.ObjectId, author: string, title: string, text: string, createdAt: Date, coveyTownID: string) {
       this._id = id;
       this._author = author;
       if (title.length > 50) {
