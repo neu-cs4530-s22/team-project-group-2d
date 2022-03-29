@@ -14,3 +14,10 @@ export type ChatMessage = {
   body: string;
   dateCreated: Date;
 };
+
+export interface PostCreateRequest {
+  title: string,
+  text: string,
+  author: string,
+  coveyTownID: string,
+}

@@ -27,6 +27,6 @@ export default class BulletinBoard {
   }
 
   sortPostsByTime() {
-    this._posts.sort((a, b) => a.creationTime - b.creationTime);
+    this._posts.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
   }
 }

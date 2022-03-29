@@ -1,25 +1,37 @@
+import { Schema } from 'mongoose';
+
 export default class BulletinPost {
+    private _id: Schema.Types.ObjectId;
+
     private _author: string;
   
     private _title: string;
   
     private _text: string;
   
-    private _creationTime: number;
+    private _createdAt: Date;
+
+    private _coveyTownID: string;
   
-    constructor(author: string, title: string, text: string) {
+    constructor(id: Schema.Types.ObjectId, author: string, title: string, text: string, createdAt: Date, coveyTownID: string) {
+      this._id = id;
       this._author = author;
       if (title.length > 50) {
        this._title = title.substring(0, 50);
-     } else {
-       this._title = title;
-     }
-     if (text.length > 50) {
-       this._text = text.substring(0, 300);
-     } else {
-       this._text = text;
-     }
-      this._creationTime = Date.now();
+      } else {
+        this._title = title;
+      }
+      if (text.length > 300) {
+        this._text = text.substring(0, 300);
+      } else {
+        this._text = text;
+      }
+      this._createdAt = createdAt;
+      this._coveyTownID = coveyTownID
+    }
+
+    get id(): Schema.Types.ObjectId {
+      return this._id;
     }
   
     get author() {
@@ -50,7 +62,11 @@ export default class BulletinPost {
       return this._text;
     }
 
-    get creationTime() {
-      return this._creationTime;
+    get createdAt() {
+      return this._createdAt;
+    }
+
+    get coveyTownID() {
+      return this._coveyTownID;
     }
   }
