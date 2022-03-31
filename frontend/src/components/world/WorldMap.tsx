@@ -34,6 +34,8 @@ class CoveyGameScene extends Phaser.Scene {
 
   private conversationAreas: ConversationGameObjects[] = [];
 
+  private bulletinAreas: Phaser.GameObjects.Sprite[] = [];
+
   private cursors: Phaser.Types.Input.Keyboard.CursorKeys[] = [];
 
   /*
@@ -56,6 +58,8 @@ class CoveyGameScene extends Phaser.Scene {
   private currentConversationArea?: ConversationGameObjects;
 
   private infoTextBox?: Phaser.GameObjects.Text;
+
+  private bulletinInfoTextBox?: Phaser.GameObjects.Text;
 
   private setNewConversation: (conv: ConversationArea) => void;
 
@@ -298,7 +302,7 @@ class CoveyGameScene extends Phaser.Scene {
         this.lastLocation.rotation = primaryDirection || 'front';
         this.lastLocation.moving = isMoving;
         if (this.currentConversationArea) {
-          if(this.currentConversationArea.conversationArea){
+          if (this.currentConversationArea.conversationArea) {
             this.lastLocation.conversationLabel = this.currentConversationArea.label;
           }
           if (
@@ -311,6 +315,14 @@ class CoveyGameScene extends Phaser.Scene {
             this.currentConversationArea = undefined;
             this.lastLocation.conversationLabel = undefined;
           }
+        }
+        if (this.bulletinAreas.length > 0 &&
+          !Phaser.Geom.Rectangle.Overlaps(
+            this.bulletinAreas[0].getBounds(),
+            this.player.sprite.getBounds(),
+          )
+        ) {
+          this.bulletinInfoTextBox?.setVisible(false);
         }
         this.emitMovement(this.lastLocation);
       }
@@ -377,6 +389,7 @@ class CoveyGameScene extends Phaser.Scene {
       // the map
     });
 
+    // conversation area code
     const conversationAreaObjects = map.filterObjects(
       'Objects',
       obj => obj.type === 'conversation',
@@ -423,6 +436,40 @@ class CoveyGameScene extends Phaser.Scene {
       .setDepth(30);
     this.infoTextBox.setVisible(false);
     this.infoTextBox.x = this.game.scale.width / 2 - this.infoTextBox.width / 2;
+
+    // bulletin board code
+    const bulletinAreaTiledObject = map.filterObjects('Objects', obj => obj.type === 'bulletin');
+    const bulletinAreaPhaserObject = map.createFromObjects(
+      'Objects',
+      bulletinAreaTiledObject.map(obj => ({ id: obj.id })),
+    );
+
+    this.physics.world.enable(bulletinAreaPhaserObject);
+    bulletinAreaPhaserObject.forEach(bulletinArea => {
+      this.bulletinAreas.push(bulletinArea as Phaser.GameObjects.Sprite);
+    });
+    const currBulletinArea = this.bulletinAreas[0];
+    currBulletinArea.y += currBulletinArea.displayHeight;
+    this.add.text(
+      currBulletinArea.x - currBulletinArea.displayWidth / 2,
+      currBulletinArea.y - currBulletinArea.displayHeight / 2,
+      'Bulletin Board',
+      { color: '#FFFFFF', backgroundColor: '#000000' },
+    );
+    currBulletinArea.setTintFill();
+    currBulletinArea.setAlpha(0.3);
+
+    this.bulletinInfoTextBox = this.add
+      .text(
+        this.game.scale.width / 2,
+        this.game.scale.height / 2,
+        'Press x to view the bulletin board',
+        { color: '#000000', backgroundColor: '#FFFFFF' },
+      )
+      .setScrollFactor(0)
+      .setDepth(30);
+    this.bulletinInfoTextBox.setVisible(false);
+    this.bulletinInfoTextBox.x = this.game.scale.width / 2 - this.bulletinInfoTextBox.width / 2;
 
     const labels = map.filterObjects('Objects', obj => obj.name === 'label');
     labels.forEach(label => {
@@ -524,6 +571,9 @@ class CoveyGameScene extends Phaser.Scene {
         }
       },
     );
+    this.physics.add.overlap(sprite, bulletinAreaPhaserObject, () => {
+      this.bulletinInfoTextBox?.setVisible(true);
+    });
 
     this.emitMovement({
       rotation: 'front',
@@ -625,7 +675,7 @@ class CoveyGameScene extends Phaser.Scene {
   pause() {
     if (!this.paused) {
       this.paused = true;
-      if(this.player){
+      if (this.player) {
         this.player?.sprite.anims.stop();
         const body = this.player.sprite.body as Phaser.Physics.Arcade.Body;
         body.setVelocity(0);
