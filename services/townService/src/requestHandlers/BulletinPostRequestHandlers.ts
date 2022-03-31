@@ -1,4 +1,3 @@
-import { Schema } from 'mongoose';
 import { createPost, deletePost, findAllPosts, findAllPostsInTown } from '../models/posts/dao';
 import { ResponseEnvelope } from './CoveyTownRequestHandlers';
 import { PostCreateRequest } from '../CoveyTypes';
@@ -23,12 +22,13 @@ export interface PostListResponse {
  * Payload sent by the client to delete a BulletinPost
  */
 export interface PostDeleteRequest {
-  postID: Schema.Types.ObjectId;
+  postID: string;
   coveyTownPassword: string;
 }
 
 export function postCreateHandler(requestData: PostCreateRequest): ResponseEnvelope<PostCreateResponse> {
-  createPost(requestData);
+  const post = new ServerBulletinPost(requestData.author, requestData.title, requestData.text, requestData.coveyTownID);
+  createPost(post);
   return {
     isOK: true,
     response: {
