@@ -1,11 +1,11 @@
-import { Schema } from 'mongoose';
-import ServerBulletinPost from './BulletinPost';
+import { Schema } from 'mongoose'
+import BulletinPost from './BulletinPost';
 
 describe('ServerBulletinPost', () => {
   it('creates Bulletin Post with given parameters', () => {
     const objId = new Schema.Types.ObjectId('2');
     const date = new Date();
-    const bulletinPost = new ServerBulletinPost(
+    const bulletinPost = new BulletinPost(
       objId,
       'author',
       'title',
@@ -34,7 +34,7 @@ describe('ServerBulletinPost', () => {
       'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' +
       'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' +
       'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
-    const bulletinPost = new ServerBulletinPost(
+    const bulletinPost = new BulletinPost(
       objId,
       'author',
       'title',
@@ -65,7 +65,7 @@ describe('ServerBulletinPost', () => {
     const date = new Date();
     const titleWith60 = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaa';
     const titleWith50 = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
-    const bulletinPost = new ServerBulletinPost(
+    const bulletinPost = new BulletinPost(
       objId,
       'author',
       titleWith60,
