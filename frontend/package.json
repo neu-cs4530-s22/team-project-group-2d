@@ -33,6 +33,7 @@
     "fscreen": "^1.0.2",
     "linkify-it": "^3.0.3",
     "lodash.throttle": "^4.1.1",
+    "mongodb": "^4.4.1",
     "mongoose": "^6.2.9",
     "nanoid": "^3.1.12",
     "node-sass": "^7.0.1",
