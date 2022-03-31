@@ -1,7 +1,7 @@
-import { Schema } from 'mongoose';
+import { nanoid } from 'nanoid';
 
 export default class ServerBulletinPost {
-  private _id: Schema.Types.ObjectId;
+  private _id: string;
 
   private _author: string;
 
@@ -13,8 +13,8 @@ export default class ServerBulletinPost {
 
   private _coveyTownID: string;
 
-  constructor(id: Schema.Types.ObjectId, author: string, title: string, text: string, createdAt: Date, coveyTownID: string) {
-    this._id = id;
+  constructor(author: string, title: string, text: string, coveyTownID: string) {
+    this._id = nanoid();
     this._author = author;
     if (title.length > 50) {
       this._title = title.substring(0, 50);
@@ -26,11 +26,11 @@ export default class ServerBulletinPost {
     } else {
       this._text = text;
     }
-    this._createdAt = createdAt;
+    this._createdAt = new Date();
     this._coveyTownID = coveyTownID;
   }
 
-  get id(): Schema.Types.ObjectId {
+  get id(): string {
     return this._id;
   }
 
