@@ -450,7 +450,7 @@ class CoveyGameScene extends Phaser.Scene {
     });
     const currBulletinArea = this.bulletinAreas[0];
     currBulletinArea.y += currBulletinArea.displayHeight;
-    const labelText = this.add.text(
+    this.add.text(
       currBulletinArea.x - currBulletinArea.displayWidth / 2,
       currBulletinArea.y - currBulletinArea.displayHeight / 2,
       'Bulletin Board',
