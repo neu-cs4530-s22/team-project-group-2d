@@ -7,9 +7,15 @@ type BulletinPostProps = {
     text: string;
 }
 export default function BulletinPost({title, author, text} : BulletinPostProps) : JSX.Element {
-    return (<Box>
-        <Heading as='h2' size='xl'>{title}</Heading>
-        <Heading as='h3' size='l' isTruncated>{author}</Heading>
-        <Text fontSize='sm'>{text}</Text>
+    return (<Box rounded="20px" overflow="hidden" borderWidth='1px' boxShadow='md' bg='gray.200' p={8} mt={5} mb={5}>
+        <Heading as='h2' size='md' >{title}</Heading>
+        <Text color='gray.500'
+            fontWeight='semibold'
+            letterSpacing='wide'
+            fontSize='sm'
+            textTransform='uppercase'
+            mt={1}
+            isTruncated>{author}</Text>
+        <Text fontSize='sm' mt={5}>{text}</Text>
     </Box>)
 }
