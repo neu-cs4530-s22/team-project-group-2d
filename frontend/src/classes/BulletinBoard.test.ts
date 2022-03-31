@@ -2,7 +2,7 @@ import ServerBulletinBoard from './BulletinBoard';
 import BulletinPost from './BulletinPost';
 
 function createBulletinPost(title: string) : BulletinPost {
-  return new BulletinPost('', title, '', '');
+  return new BulletinPost('id', 'author', title, 'text', new Date(), 'townID');
 }
 
 describe('BulletinBoard', () => {

@@ -1,29 +1,20 @@
-import { Schema } from 'mongoose';
 import ServerBulletinPost from './BulletinPost';
 
 describe('ServerBulletinPost', () => {
   it('creates Bulletin Post with given parameters', () => {
-    const objId = new Schema.Types.ObjectId('2');
-    const date = new Date();
     const bulletinPost = new ServerBulletinPost(
-      objId,
       'author',
       'title',
       'text',
-      date,
       'coveyTownID',
     );
     expect(bulletinPost.author).toBe('author');
-    expect(bulletinPost.id).toBe(objId);
     expect(bulletinPost.title).toBe('title');
     expect(bulletinPost.coveyTownID).toBe('coveyTownID');
-    expect(bulletinPost.createdAt).toBe(date);
     expect(bulletinPost.text).toBe('text');
   });
 
   it('creates Bulletin Post and makes sure that text is limited 300 characters', () => {
-    const objId = new Schema.Types.ObjectId('2');
-    const date = new Date();
     const txtWith350 =
       'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' +
       'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' +
@@ -35,11 +26,9 @@ describe('ServerBulletinPost', () => {
       'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' +
       'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
     const bulletinPost = new ServerBulletinPost(
-      objId,
       'author',
       'title',
       txtWith350,
-      date,
       'coveyTownID',
     );
     expect(bulletinPost.text).toBe(txtWith300);
@@ -61,16 +50,12 @@ describe('ServerBulletinPost', () => {
   });
 
   it('creates Bulletin Post and makes sure that title is limited 50 characters', () => {
-    const objId = new Schema.Types.ObjectId('2');
-    const date = new Date();
     const titleWith60 = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbaaaaaaaaaa';
     const titleWith50 = 'bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb';
     const bulletinPost = new ServerBulletinPost(
-      objId,
       'author',
       titleWith60,
       'text',
-      date,
       'coveyTownID',
     );
     expect(bulletinPost.title).toBe(titleWith50);
