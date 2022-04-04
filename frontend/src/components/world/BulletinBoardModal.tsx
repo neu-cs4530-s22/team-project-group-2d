@@ -17,7 +17,7 @@ import React,{ useCallback,useMemo,useState } from 'react';
 import ConversationArea from '../../classes/ConversationArea';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
 import useMaybeVideo from '../../hooks/useMaybeVideo';
-import CreatePostModal from '../BulletinBoard/CreatePost';
+import CreatePostModal from '../BulletinBoard/CreatePostModal';
 
 
 type BulletinBoardModalProps = {

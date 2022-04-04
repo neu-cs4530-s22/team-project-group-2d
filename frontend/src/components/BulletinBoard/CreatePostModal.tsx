@@ -51,7 +51,7 @@ export default function CreatePostModal({isOpen, closeModal} : CreatePostModalPr
               />
             </FormControl>
             <FormControl>
-              <FormLabel mt={6} htmlFor='text'>Text for Post</FormLabel>
+              <FormLabel mt={3} htmlFor='text'>Text for Post</FormLabel>
               <Textarea
                 id='text'
                 placeholder='Enter your text here'
