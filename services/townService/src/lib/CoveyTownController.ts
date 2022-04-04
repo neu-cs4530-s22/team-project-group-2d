@@ -1,6 +1,7 @@
 import { customAlphabet, nanoid } from 'nanoid';
 import { BoundingBox, ServerConversationArea } from '../client/TownsServiceClient';
 import { ChatMessage, UserLocation } from '../CoveyTypes';
+import ServerBulletinBoard from '../types/BulletinBoard';
 import CoveyTownListener from '../types/CoveyTownListener';
 import Player from '../types/Player';
 import PlayerSession from '../types/PlayerSession';
@@ -54,6 +55,10 @@ export default class CoveyTownController {
     return this._conversationAreas;
   }
 
+  get bulletinBoard(): ServerBulletinBoard {
+    return this._bulletinBoard;
+  }
+
   /** The list of players currently in the town * */
   private _players: Player[] = [];
 
@@ -79,12 +84,15 @@ export default class CoveyTownController {
 
   private _capacity: number;
 
+  private _bulletinBoard: ServerBulletinBoard;
+
   constructor(friendlyName: string, isPubliclyListed: boolean) {
     this._coveyTownID = process.env.DEMO_TOWN_ID === friendlyName ? friendlyName : friendlyNanoID();
     this._capacity = 50;
     this._townUpdatePassword = nanoid(24);
     this._isPubliclyListed = isPubliclyListed;
     this._friendlyName = friendlyName;
+    this._bulletinBoard = new ServerBulletinBoard();
   }
 
   /**
