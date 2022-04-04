@@ -33,6 +33,12 @@ describe('CoveyTownController', () => {
     expect(townController.friendlyName)
       .toBe(townName);
   });
+  it('constructor should create an empty bulletin board', () => { 
+    const townName = `FriendlyNameTest-${nanoid()}`;
+    const townController = new CoveyTownController(townName, false);
+    expect(townController.bulletinBoard.isEmpty())
+      .toBe(true);
+  });
   describe('addPlayer', () => { 
     it('should use the coveyTownID and player ID properties when requesting a video token',
       async () => {
