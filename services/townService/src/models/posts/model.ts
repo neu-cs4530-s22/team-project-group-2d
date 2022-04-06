@@ -1,7 +1,8 @@
 import { Schema, model, Model } from 'mongoose';
-import ServerBulletinPost from '../../types/BulletinPost';
+import { BulletinPostSchema } from '../../types/BulletinPost';
 
-const PostSchema = new Schema<ServerBulletinPost>({
+
+const PostSchema = new Schema<BulletinPostSchema>({
   id: { type: String, required: true },
   title: { type: String, required: true },
   text: { type: String, required: true },
@@ -10,5 +11,5 @@ const PostSchema = new Schema<ServerBulletinPost>({
   createdAt: { type: Date, required: true, default: Date.now },
 }, { collection: 'bulletin_posts' });
 
-const PostModel: Model<ServerBulletinPost> = model<ServerBulletinPost>('BulletinPost', PostSchema);
+const PostModel: Model<BulletinPostSchema> = model<BulletinPostSchema>('BulletinPost', PostSchema);
 export default PostModel;

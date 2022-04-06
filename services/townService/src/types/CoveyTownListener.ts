@@ -1,5 +1,6 @@
 import { ServerConversationArea } from '../client/TownsServiceClient';
 import { ChatMessage } from '../CoveyTypes';
+import ServerBulletinPost from './BulletinPost';
 import Player from './Player';
 
 /**
@@ -46,4 +47,10 @@ export default interface CoveyTownListener {
    * @param message the new chat message
    */
   onChatMessage(message: ChatMessage): void;
+
+  /**
+   * Called when a bulletin post is added to the bulletin board
+   * @param newPost the new bulletin post that has been added
+   */
+  onBulletinPostAdded(newPost: ServerBulletinPost): void;
 }

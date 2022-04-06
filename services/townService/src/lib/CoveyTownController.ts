@@ -1,7 +1,9 @@
 import { customAlphabet, nanoid } from 'nanoid';
 import { BoundingBox, ServerConversationArea } from '../client/TownsServiceClient';
-import { ChatMessage, UserLocation } from '../CoveyTypes';
+import { ChatMessage, PostCreateRequest, UserLocation } from '../CoveyTypes';
+import { createPost } from '../models/posts/dao';
 import ServerBulletinBoard from '../types/BulletinBoard';
+import ServerBulletinPost from '../types/BulletinPost';
 import CoveyTownListener from '../types/CoveyTownListener';
 import Player from '../types/Player';
 import PlayerSession from '../types/PlayerSession';
@@ -215,6 +217,29 @@ export default class CoveyTownController {
     newArea.occupantsByID = playersInThisConversation.map(player => player.id);
     this._listeners.forEach(listener => listener.onConversationAreaUpdated(newArea));
     return true;
+  }
+
+  /**
+   * Adds a new bulletin post to this town's bulletin board. The post cannot have an empty
+   * title or author, and the coveyTownID must match the id of this town.
+   *
+   * Notifies any CoveyTownListeners that the bulletin post has been added.
+   *
+   * @param _bulletinPost Information describing the bulletin post to create
+   *
+   * @returns The new bulletin post or undefined if there was an error while creating
+   */
+  async addBulletinPost(_bulletinPost: PostCreateRequest): Promise<ServerBulletinPost | undefined> {
+    if (_bulletinPost.coveyTownID !== this.coveyTownID || _bulletinPost.title === '' || _bulletinPost.author === '') {
+      return undefined;
+    }
+
+    const newPost = new ServerBulletinPost(_bulletinPost.author, _bulletinPost.title, _bulletinPost.text, _bulletinPost.coveyTownID);
+    await createPost(newPost.toBulletinPostSchema());
+    this._bulletinBoard.addPost(newPost);
+
+    this._listeners.forEach(listener => listener.onBulletinPostAdded(newPost));
+    return newPost;
   }
 
   /**

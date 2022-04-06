@@ -67,4 +67,20 @@ describe('ServerBulletinPost', () => {
     expect(bulletinPost.title).toBe(correctNewTitle);
     expect(bulletinPost.title).not.toBe(newTitle);
   });
+
+  it('correctly converts a bulletin post to a BulletinPostSchema', () => {
+    const bulletinPost = new ServerBulletinPost(
+      'author',
+      'title',
+      'text',
+      'coveyTownID',
+    );
+    const matchingSchema = bulletinPost.toBulletinPostSchema();
+    expect(bulletinPost.id).toBe(matchingSchema.id);
+    expect(bulletinPost.author).toBe(matchingSchema.author);
+    expect(bulletinPost.title).toBe(matchingSchema.title);
+    expect(bulletinPost.text).toBe(matchingSchema.text);
+    expect(bulletinPost.createdAt).toBe(matchingSchema.createdAt);
+    expect(bulletinPost.coveyTownID).toBe(matchingSchema.coveyTownID);
+  });
 });
