@@ -23,6 +23,7 @@ type BulletinPostObject = {
   title: string;
   author: string;
   text: string;
+  mt?: number;
 };
 
 export default function BulletinBoardModal({
@@ -52,6 +53,7 @@ export default function BulletinBoardModal({
       author: 'Example Author',
       text:
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit.',
+      mt: 0,
     },
     {
       id: '2',
@@ -113,8 +115,8 @@ export default function BulletinBoardModal({
           <ModalCloseButton />
           <ModalBody>
             {bulletinPosts.map(post => {
-              const { id, title, author, text } = post;
-              return <BulletinPost key={id} title={title} author={author} text={text} />;
+              const { id, title, author, text, mt = 5 } = post;
+              return <BulletinPost key={id} title={title} author={author} text={text} mt={mt}/>;
             })}
           </ModalBody>
           <ModalFooter>

@@ -5,9 +5,10 @@ type BulletinPostProps = {
     title: string;
     author: string;
     text: string;
+    mt: number;
 }
-export default function BulletinPost({title, author, text} : BulletinPostProps) : JSX.Element {
-    return (<Box rounded="20px" overflow="hidden" borderWidth='1px' boxShadow='md' bg='gray.200' p={8} mt={5} mb={5}>
+export default function BulletinPost({title, author, text, mt=5} : BulletinPostProps) : JSX.Element {
+    return (<Box rounded="20px" overflow="hidden" borderWidth='1px' boxShadow='md' bg='gray.200' p={8} mt={mt} mb={5}>
         <Heading as='h2' size='md' >{title}</Heading>
         <Text color='gray.500'
             fontWeight='semibold'
