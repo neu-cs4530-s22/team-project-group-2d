@@ -1,5 +1,6 @@
 import {
   Button,
+  Heading,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -7,6 +8,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Text,
 } from '@chakra-ui/react';
 import React, { useMemo, useState } from 'react';
 import useMaybeVideo from '../../hooks/useMaybeVideo';
@@ -111,13 +113,18 @@ export default function BulletinBoardModal({
         }}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Bulletin Board </ModalHeader>
+          <ModalHeader>
+            <Heading as='h2' size='lg'>
+              Bulletin Board
+            </Heading>
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             {bulletinPosts.map(post => {
               const { id, title, author, text, mt = 5 } = post;
-              return <BulletinPost key={id} title={title} author={author} text={text} mt={mt}/>;
+              return <BulletinPost key={id} title={title} author={author} text={text} mt={mt} />;
             })}
+            {bulletinPosts.length === 0 && <Text>It seems like there aren&apos;t any post on the Bulletin Board yet. Add your own by clicking the Write a Post button. </Text>}
           </ModalBody>
           <ModalFooter>
             <Button
