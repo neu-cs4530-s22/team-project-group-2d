@@ -1,38 +1,29 @@
-import { createPost, deletePost, findAllPosts, findAllPostsInTown } from '../models/posts/dao';
-import { ResponseEnvelope } from './CoveyTownRequestHandlers';
-import { PostCreateRequest } from '../CoveyTypes';
-import ServerBulletinPost from '../types/BulletinPost';
+import { deletePost, findAllPosts, findAllPostsInTown } from '../models/posts/dao';
+import CoveyTownsStore from '../lib/CoveyTownsStore';
+import { PostCreateRequest, PostCreateResponse, PostDeleteRequest, PostListResponse, ResponseEnvelope } from '../client/TownsServiceClient';
 
+export async function postCreateHandler(requestData: PostCreateRequest): Promise<ResponseEnvelope<PostCreateResponse>> {
+  const townsStore = CoveyTownsStore.getInstance();
+  const coveyTownController = townsStore.getControllerForTown(requestData.coveyTownID);
+  if (!coveyTownController) {
+    return {
+      isOK: false,
+      message: 'Error: No such town',
+    };
+  }
 
-/**
- * Response from the server for a BulletinPost create request
- */
-export interface PostCreateResponse {
-  post: ServerBulletinPost | undefined; // TODO remove undefined - using for stubs
-}
+  const newPost = await coveyTownController.addBulletinPost(requestData);
+  if (!newPost) {
+    return {
+      isOK: false,
+      message: 'Error: Failed to create post',
+    };
+  }
 
-/**
- * Response from the server for a BulletinPost list request
- */
-export interface PostListResponse {
-  towns: ServerBulletinPost[];
-}
-
-/**
- * Payload sent by the client to delete a BulletinPost
- */
-export interface PostDeleteRequest {
-  postID: string;
-  coveyTownPassword: string;
-}
-
-export function postCreateHandler(requestData: PostCreateRequest): ResponseEnvelope<PostCreateResponse> {
-  const post = new ServerBulletinPost(requestData.author, requestData.title, requestData.text, requestData.coveyTownID);
-  createPost(post);
   return {
     isOK: true,
     response: {
-      post: undefined,
+      post: newPost,
     },
   };
 }
@@ -50,7 +41,7 @@ export function postListHandler(): ResponseEnvelope<PostListResponse> {
   return {
     isOK: true,
     response: {
-      towns: [],
+      posts: [],
     },
   };
 }
@@ -60,7 +51,7 @@ export function postListByTownHandler(townID: string): ResponseEnvelope<PostList
   return {
     isOK: true,
     response: {
-      towns: [],
+      posts: [],
     },
   };
 }

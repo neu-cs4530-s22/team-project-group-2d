@@ -1,8 +1,8 @@
+import { BulletinPostSchema } from '../../types/BulletinPost';
 import PostModel from './model';
-import ServerBulletinPost from '../../types/BulletinPost';
 
-export async function createPost(post: ServerBulletinPost) : Promise<ServerBulletinPost> {
-  const response: ServerBulletinPost = await PostModel.create(post);
+export async function createPost(post: BulletinPostSchema) : Promise<BulletinPostSchema> {
+  const response: BulletinPostSchema = await PostModel.create(post);
   return response;
 } 
 
@@ -11,17 +11,17 @@ export async function deletePost(id: string) : Promise<void> {
   await PostModel.deleteOne({ id });
 } 
 
-export async function findPostById(id: string) : Promise<ServerBulletinPost | null> {
-  const response: ServerBulletinPost | null = await PostModel.findOne({ id });
+export async function findPostById(id: string) : Promise<BulletinPostSchema | null> {
+  const response: BulletinPostSchema | null = await PostModel.findOne({ id });
   return response;
 } 
 
-export async function findAllPosts() : Promise<ServerBulletinPost[]> {
-  const response: ServerBulletinPost[] = await PostModel.find();
+export async function findAllPosts() : Promise<BulletinPostSchema[]> {
+  const response: BulletinPostSchema[] = await PostModel.find();
   return response;
 } 
 
-export async function findAllPostsInTown(townID: string) : Promise<ServerBulletinPost[]> {
-  const response: ServerBulletinPost[] = await PostModel.find({ coveyTownID: townID });
+export async function findAllPostsInTown(townID: string) : Promise<BulletinPostSchema[]> {
+  const response: BulletinPostSchema[] = await PostModel.find({ coveyTownID: townID });
   return response;
 } 

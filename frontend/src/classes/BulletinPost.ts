@@ -1,3 +1,13 @@
+
+export interface BulletinPostSchema {
+  id: string;
+  title: string;
+  text: string;
+  author: string;
+  coveyTownID: string;
+  createdAt: Date;
+}
+
 export default class BulletinPost {
     private _id: string;
 
@@ -66,5 +76,16 @@ export default class BulletinPost {
 
     get coveyTownID() {
       return this._coveyTownID;
+    }
+
+    toBulletinPostSchema() : BulletinPostSchema {
+      return {
+        id: this._id,
+        title: this._title,
+        text: this._text,
+        author: this._author,
+        coveyTownID: this._coveyTownID,
+        createdAt: this._createdAt,
+      };
     }
   }

@@ -5,6 +5,7 @@ import { ChatMessage, CoveyTownList, UserLocation } from '../CoveyTypes';
 import CoveyTownListener from '../types/CoveyTownListener';
 import CoveyTownsStore from '../lib/CoveyTownsStore';
 import { ConversationAreaCreateRequest, ServerConversationArea } from '../client/TownsServiceClient';
+import ServerBulletinPost from '../types/BulletinPost';
 
 /**
  * The format of a request to join a Town in Covey.Town, as dispatched by the server middleware
@@ -227,6 +228,9 @@ function townSocketAdapter(socket: Socket): CoveyTownListener {
     },
     onChatMessage(message: ChatMessage){
       socket.emit('chatMessage', message);
+    },
+    onBulletinPostAdded(newPost: ServerBulletinPost){
+      socket.emit('newBulletinPost', newPost);
     },
   };
 }
