@@ -2,6 +2,7 @@ import axios, { AxiosInstance, AxiosResponse } from 'axios';
 import assert from 'assert';
 import { ServerPlayer } from './Player';
 import { ServerConversationArea } from './ConversationArea';
+import { BulletinPostSchema } from './BulletinPost';
 
 /**
  * The format of a request to join a Town in Covey.Town, as dispatched by the server middleware
@@ -86,6 +87,38 @@ export interface ConversationCreateRequest {
 }
 
 /**
+ * Payload sent by the client to create a new bulletin post
+ */
+ export interface PostCreateRequest {
+  title: string,
+  text: string,
+  author: string,
+  coveyTownID: string,
+}
+
+/**
+ * Response from the server for a BulletinPost create request
+ */
+export interface PostCreateResponse {
+  post: BulletinPostSchema;
+}
+
+/**
+ * Response from the server for a BulletinPost list request
+ */
+export interface PostListResponse {
+  posts: BulletinPostSchema[];
+}
+
+/**
+ * Payload sent by the client to delete a BulletinPost
+ */
+ export interface PostDeleteRequest {
+  postID: string;
+  coveyTownPassword: string;
+}
+
+/**
  * Envelope that wraps any response from the server
  */
 export interface ResponseEnvelope<T> {
@@ -156,4 +189,8 @@ export default class TownsServiceClient {
     return TownsServiceClient.unwrapOrThrowError(responseWrapper);
   }
 
+  async createBulletinPost(requestData: PostCreateRequest) : Promise<PostCreateResponse> {
+    const responseWrapper = await this._axios.post('/posts', requestData);
+    return TownsServiceClient.unwrapOrThrowError(responseWrapper);
+  }
 }

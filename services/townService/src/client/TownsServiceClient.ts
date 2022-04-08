@@ -129,7 +129,7 @@ export interface PostCreateResponse {
  * Response from the server for a BulletinPost list request
  */
 export interface PostListResponse {
-  towns: BulletinPostSchema[];
+  posts: BulletinPostSchema[];
 }
 
 /**
