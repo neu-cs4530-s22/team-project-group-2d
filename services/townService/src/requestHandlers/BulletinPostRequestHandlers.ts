@@ -41,7 +41,7 @@ export function postListHandler(): ResponseEnvelope<PostListResponse> {
   return {
     isOK: true,
     response: {
-      towns: [],
+      posts: [],
     },
   };
 }
@@ -51,7 +51,7 @@ export function postListByTownHandler(townID: string): ResponseEnvelope<PostList
   return {
     isOK: true,
     response: {
-      towns: [],
+      posts: [],
     },
   };
 }
