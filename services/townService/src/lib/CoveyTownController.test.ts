@@ -5,13 +5,14 @@ import TwilioVideo from './TwilioVideo';
 import Player from '../types/Player';
 import CoveyTownController from './CoveyTownController';
 import CoveyTownListener from '../types/CoveyTownListener';
-import { UserLocation, PostCreateRequest } from '../CoveyTypes';
+import { UserLocation } from '../CoveyTypes';
 import PlayerSession from '../types/PlayerSession';
 import { townSubscriptionHandler } from '../requestHandlers/CoveyTownRequestHandlers';
 import CoveyTownsStore from './CoveyTownsStore';
 import * as TestUtils from '../client/TestUtils';
 import { BulletinPostSchema } from '../types/BulletinPost';
 import * as daoMethods from '../models/posts/dao';
+import { PostCreateRequest } from '../client/TownsServiceClient';
 
 const mockTwilioVideo = mockDeep<TwilioVideo>();
 jest.spyOn(TwilioVideo, 'getInstance').mockReturnValue(mockTwilioVideo);
@@ -344,7 +345,7 @@ describe('CoveyTownController', () => {
       const result = await testingTown.addBulletinPost(defaultRequest);
       const { posts } = testingTown.bulletinBoard;
       expect(posts.length).toBe(1);
-      expect(posts[0]).toBe(result);
+      expect(posts[0].toBulletinPostSchema()).toEqual(result);
       expect(mockListener.onBulletinPostAdded).toBeCalledTimes(1);
 
       spy.mockRestore();
@@ -356,13 +357,12 @@ describe('CoveyTownController', () => {
       const mockListener = mock<CoveyTownListener>();
       testingTown.addTownListener(mockListener);
 
-      const resultOne = await testingTown.addBulletinPost(defaultRequest);
-      const resultTwo = await testingTown.addBulletinPost(defaultRequest);
+      const postOne = await testingTown.addBulletinPost(defaultRequest);
+      const postTwo = await testingTown.addBulletinPost(defaultRequest);
       const { posts } = testingTown.bulletinBoard;
       expect(posts.length).toBe(2);
-      expect(posts[0]).toBe(resultOne);
-      expect(posts[1]).toBe(resultTwo);
-      expect(posts[0].id).not.toBe(posts[1].id);
+      expect(posts[0].toBulletinPostSchema()).toEqual(postOne);
+      expect(posts[1].toBulletinPostSchema()).toEqual(postTwo);
       expect(mockListener.onBulletinPostAdded).toBeCalledTimes(2);
 
       spy.mockRestore();

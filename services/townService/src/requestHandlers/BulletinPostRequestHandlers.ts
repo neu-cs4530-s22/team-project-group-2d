@@ -1,31 +1,6 @@
 import { deletePost, findAllPosts, findAllPostsInTown } from '../models/posts/dao';
-import { ResponseEnvelope } from './CoveyTownRequestHandlers';
-import { PostCreateRequest } from '../CoveyTypes';
-import ServerBulletinPost from '../types/BulletinPost';
 import CoveyTownsStore from '../lib/CoveyTownsStore';
-
-
-/**
- * Response from the server for a BulletinPost create request
- */
-export interface PostCreateResponse {
-  post: ServerBulletinPost;
-}
-
-/**
- * Response from the server for a BulletinPost list request
- */
-export interface PostListResponse {
-  towns: ServerBulletinPost[];
-}
-
-/**
- * Payload sent by the client to delete a BulletinPost
- */
-export interface PostDeleteRequest {
-  postID: string;
-  coveyTownPassword: string;
-}
+import { PostCreateRequest, PostCreateResponse, PostDeleteRequest, PostListResponse, ResponseEnvelope } from '../client/TownsServiceClient';
 
 export async function postCreateHandler(requestData: PostCreateRequest): Promise<ResponseEnvelope<PostCreateResponse>> {
   const townsStore = CoveyTownsStore.getInstance();
