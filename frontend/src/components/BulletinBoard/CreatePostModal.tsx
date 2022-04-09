@@ -10,9 +10,10 @@ import {
     ModalFooter,
     ModalHeader,
     ModalOverlay,
-    Textarea,} from '@chakra-ui/react';
+    Textarea,
+    useToast,} from '@chakra-ui/react';
 import React, { useCallback, useState } from 'react';
-// import useCoveyAppState from '../../hooks/useCoveyAppState';
+import useCoveyAppState from '../../hooks/useCoveyAppState';
 
 type CreatePostModalProps = {
   isOpen: boolean;
@@ -22,11 +23,34 @@ type CreatePostModalProps = {
 export default function CreatePostModal({isOpen, closeModal} : CreatePostModalProps): JSX.Element {
   const [title, setTitle] = useState<string>('');
   const [text, setText] = useState<string>('');
-  // const {apiClient, sessionToken, currentTownID} = useCoveyAppState();
+  const {apiClient, userName, currentTownID} = useCoveyAppState();
+  const toast = useToast()
   const createPost = useCallback(async () => {
-      // will implement later; most likely api call/api route call
-  // }, [topic, apiClient, newConversation, closeModal, currentTownID, sessionToken, toast, video]);
-  }, []);
+    if (title !== '' && text !== '') {
+      try {
+        await apiClient.createBulletinPost({
+          title, author: userName, text, coveyTownID: currentTownID
+        });
+        toast({
+          title: 'Post Created!',
+          status: 'success',
+        });
+        closeModal();
+      } catch (err) {
+        toast({
+          title: 'Unable to create post',
+          description: err.toString(),
+          status: 'error',
+        });
+      }
+    } else {
+      toast({
+        title: 'Unable to create post',
+        description: "Invalid title and/or text field",
+        status: 'error',
+      });
+    }
+  }, [title, text, apiClient, userName, currentTownID, toast, closeModal]);
 
   return (
     <Modal isOpen={isOpen} onClose={()=>{closeModal()}}>
