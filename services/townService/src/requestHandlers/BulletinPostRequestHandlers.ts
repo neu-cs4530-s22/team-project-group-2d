@@ -2,7 +2,7 @@ import { deletePost } from '../models/posts/dao';
 import CoveyTownsStore from '../lib/CoveyTownsStore';
 import { PostCreateRequest, PostCreateResponse, PostDeleteRequest, ResponseEnvelope } from '../client/TownsServiceClient';
 
-export async function postCreateHandler(requestData: PostCreateRequest): Promise<ResponseEnvelope<PostCreateResponse>> {
+export function postCreateHandler(requestData: PostCreateRequest): ResponseEnvelope<PostCreateResponse> {
   const townsStore = CoveyTownsStore.getInstance();
   const coveyTownController = townsStore.getControllerForTown(requestData.coveyTownID);
   if (!coveyTownController) {
@@ -12,7 +12,7 @@ export async function postCreateHandler(requestData: PostCreateRequest): Promise
     };
   }
 
-  const newPost = await coveyTownController.addBulletinPost(requestData);
+  const newPost = coveyTownController.addBulletinPost(requestData);
   if (!newPost) {
     return {
       isOK: false,

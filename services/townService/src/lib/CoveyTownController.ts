@@ -228,7 +228,7 @@ export default class CoveyTownController {
    *
    * @returns The new bulletin post or undefined if there was an error while creating
    */
-  async addBulletinPost(_bulletinPost: PostCreateRequest): Promise<BulletinPostSchema | undefined> {
+  addBulletinPost(_bulletinPost: PostCreateRequest): BulletinPostSchema | undefined {
     if (_bulletinPost.coveyTownID !== this.coveyTownID || _bulletinPost.title === '' || _bulletinPost.text === '' || _bulletinPost.author === '') {
       return undefined;
     }
