@@ -11,7 +11,6 @@ import { townSubscriptionHandler } from '../requestHandlers/CoveyTownRequestHand
 import CoveyTownsStore from './CoveyTownsStore';
 import * as TestUtils from '../client/TestUtils';
 import { BulletinPostSchema } from '../types/BulletinPost';
-import * as daoMethods from '../models/posts/dao';
 import { PostCreateRequest } from '../client/TownsServiceClient';
 
 const mockTwilioVideo = mockDeep<TwilioVideo>();
@@ -301,7 +300,6 @@ describe('CoveyTownController', () => {
   describe('addBulletinPost', () => {
     let testingTown: CoveyTownController;
     let defaultRequest : PostCreateRequest;
-    let defaultSchema : BulletinPostSchema;
     beforeEach(() => {
       const townName = `addBulletinPost test town ${nanoid()}`;
       testingTown = new CoveyTownController(townName, false);
@@ -310,14 +308,6 @@ describe('CoveyTownController', () => {
         text: 'text',
         author: 'author',
         coveyTownID: testingTown.coveyTownID,
-      };
-      defaultSchema = {
-        id: 'id',
-        title: 'title',
-        text: 'text',
-        author: 'author',
-        coveyTownID: testingTown.coveyTownID,
-        createdAt: new Date(),
       };
     });
     it('should not add a post to a town that does not exist', async () => {
@@ -336,9 +326,6 @@ describe('CoveyTownController', () => {
       expect(result).toBeUndefined();
     });
     it('should add a post to the town bulletin board and emit an onBulletinPostAdded', async () => {
-      const spy = jest
-        .spyOn(daoMethods, 'createPost')
-        .mockResolvedValue(defaultSchema);
       const mockListener = mock<CoveyTownListener>();
       testingTown.addTownListener(mockListener);
 
@@ -347,13 +334,8 @@ describe('CoveyTownController', () => {
       expect(posts.length).toBe(1);
       expect(posts[0].toBulletinPostSchema()).toEqual(result);
       expect(mockListener.onBulletinPostAdded).toBeCalledTimes(1);
-
-      spy.mockRestore();
     });
     it('should allow posts that have the same title, text, and author', async () => {
-      const spy = jest
-        .spyOn(daoMethods, 'createPost')
-        .mockResolvedValue(defaultSchema);
       const mockListener = mock<CoveyTownListener>();
       testingTown.addTownListener(mockListener);
 
@@ -364,8 +346,6 @@ describe('CoveyTownController', () => {
       expect(posts[0].toBulletinPostSchema()).toEqual(postOne);
       expect(posts[1].toBulletinPostSchema()).toEqual(postTwo);
       expect(mockListener.onBulletinPostAdded).toBeCalledTimes(2);
-
-      spy.mockRestore();
     });
   });
 });

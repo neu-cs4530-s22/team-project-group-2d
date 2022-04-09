@@ -6,7 +6,6 @@ import { AddressInfo } from 'net';
 import addPostRoutes from '../router/posts';
 import addTownRoutes from '../router/towns';
 import TownsServiceClient from './TownsServiceClient';
-import * as daoMethods from '../models/posts/dao';
 
 type TestTownData = {
   friendlyName: string;
@@ -56,21 +55,8 @@ describe('PostsServiceAPIREST', () => {
   });
   describe('BulletinPostCreateAPI', () => {
     let testingTown : TestTownData;
-    const spy = jest
-      .spyOn(daoMethods, 'createPost')
-      .mockResolvedValue({
-        id: 'id',
-        title: 'title',
-        text: 'text',
-        author: 'author',
-        coveyTownID: '123',
-        createdAt: new Date(),
-      });
     beforeEach(async () => {
       testingTown = await createTownForTesting(undefined, true);
-    });
-    afterAll(async () => {
-      spy.mockRestore();
     });
     it('prohibits a blank post title', async () => {
       try {

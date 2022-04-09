@@ -1,6 +1,6 @@
-import { deletePost, findAllPosts, findAllPostsInTown } from '../models/posts/dao';
+import { deletePost } from '../models/posts/dao';
 import CoveyTownsStore from '../lib/CoveyTownsStore';
-import { PostCreateRequest, PostCreateResponse, PostDeleteRequest, PostListResponse, ResponseEnvelope } from '../client/TownsServiceClient';
+import { PostCreateRequest, PostCreateResponse, PostDeleteRequest, ResponseEnvelope } from '../client/TownsServiceClient';
 
 export async function postCreateHandler(requestData: PostCreateRequest): Promise<ResponseEnvelope<PostCreateResponse>> {
   const townsStore = CoveyTownsStore.getInstance();
@@ -33,25 +33,5 @@ export function postDeleteHandler(requestData: PostDeleteRequest): ResponseEnvel
   return {
     isOK: true,
     response: {},
-  };
-}
-
-export function postListHandler(): ResponseEnvelope<PostListResponse> {
-  findAllPosts();
-  return {
-    isOK: true,
-    response: {
-      posts: [],
-    },
-  };
-}
-
-export function postListByTownHandler(townID: string): ResponseEnvelope<PostListResponse> {
-  findAllPostsInTown(townID);
-  return {
-    isOK: true,
-    response: {
-      posts: [],
-    },
   };
 }
