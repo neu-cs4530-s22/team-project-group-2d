@@ -11,7 +11,7 @@ export default function addPostRoutes(http: Server, app: Express): io.Server {
    */
   app.post('/posts', express.json(), async (req, res) => {
     try {
-      const result = await postCreateHandler(req.body);
+      const result = postCreateHandler(req.body);
       res.status(StatusCodes.OK).json(result);
     } catch (err) {
       logError(err);

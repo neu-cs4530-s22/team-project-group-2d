@@ -1,7 +1,6 @@
 import { customAlphabet, nanoid } from 'nanoid';
 import { BoundingBox, ServerConversationArea, PostCreateRequest } from '../client/TownsServiceClient';
 import { ChatMessage, UserLocation } from '../CoveyTypes';
-import { createPost } from '../models/posts/dao';
 import ServerBulletinBoard from '../types/BulletinBoard';
 import ServerBulletinPost, { BulletinPostSchema } from '../types/BulletinPost';
 import CoveyTownListener from '../types/CoveyTownListener';
@@ -229,13 +228,12 @@ export default class CoveyTownController {
    *
    * @returns The new bulletin post or undefined if there was an error while creating
    */
-  async addBulletinPost(_bulletinPost: PostCreateRequest): Promise<BulletinPostSchema | undefined> {
+  addBulletinPost(_bulletinPost: PostCreateRequest): BulletinPostSchema | undefined {
     if (_bulletinPost.coveyTownID !== this.coveyTownID || _bulletinPost.title === '' || _bulletinPost.text === '' || _bulletinPost.author === '') {
       return undefined;
     }
 
     const newPost = new ServerBulletinPost(_bulletinPost.author, _bulletinPost.title, _bulletinPost.text, _bulletinPost.coveyTownID);
-    await createPost(newPost.toBulletinPostSchema());
     this._bulletinBoard.addPost(newPost);
 
     this._listeners.forEach(listener => listener.onBulletinPostAdded(newPost));
