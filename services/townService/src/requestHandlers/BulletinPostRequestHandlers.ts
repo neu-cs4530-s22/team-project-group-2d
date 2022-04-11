@@ -1,8 +1,15 @@
-import { deletePost, findAllPosts, findAllPostsInTown } from '../models/posts/dao';
+import {
+  PostCreateRequest,
+  PostCreateResponse,
+  PostListResponse,
+  ResponseEnvelope,
+} from '../client/TownsServiceClient';
 import CoveyTownsStore from '../lib/CoveyTownsStore';
-import { PostCreateRequest, PostCreateResponse, PostDeleteRequest, PostListResponse, ResponseEnvelope } from '../client/TownsServiceClient';
+import { findAllPosts, findAllPostsInTown } from '../models/posts/dao';
 
-export async function postCreateHandler(requestData: PostCreateRequest): Promise<ResponseEnvelope<PostCreateResponse>> {
+export async function postCreateHandler(
+  requestData: PostCreateRequest,
+): Promise<ResponseEnvelope<PostCreateResponse>> {
   const townsStore = CoveyTownsStore.getInstance();
   const coveyTownController = townsStore.getControllerForTown(requestData.coveyTownID);
   if (!coveyTownController) {
@@ -25,14 +32,6 @@ export async function postCreateHandler(requestData: PostCreateRequest): Promise
     response: {
       post: newPost,
     },
-  };
-}
-
-export function postDeleteHandler(requestData: PostDeleteRequest): ResponseEnvelope<Record<string, null>> {
-  deletePost(requestData.postID);
-  return {
-    isOK: true,
-    response: {},
   };
 }
 
