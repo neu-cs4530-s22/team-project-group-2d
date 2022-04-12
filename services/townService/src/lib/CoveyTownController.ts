@@ -6,10 +6,7 @@ import {
 } from '../client/TownsServiceClient';
 import { ChatMessage, UserLocation } from '../CoveyTypes';
 import ServerBulletinBoard from '../types/BulletinBoard';
-import ServerBulletinPost, {
-  BulletinPostSchema,
-  DeletedPostsResponse,
-} from '../types/BulletinPost';
+import ServerBulletinPost, { BulletinPostSchema } from '../types/BulletinPost';
 import CoveyTownListener from '../types/CoveyTownListener';
 import Player from '../types/Player';
 import PlayerSession from '../types/PlayerSession';
@@ -283,7 +280,7 @@ export default class CoveyTownController {
    *
    * @returns an object containing a value which indicates the number of posts that were deleted
    */
-  deleteBulletinPosts(): DeletedPostsResponse {
+  deleteBulletinPosts(): number {
     const dayBefore = new Date(Date.now() - 3600 * 1000 * 24);
     const postsToDelete = this._bulletinBoard.posts.filter(post => post.createdAt < dayBefore);
     this._bulletinBoard.deletePosts(postsToDelete);
@@ -292,7 +289,7 @@ export default class CoveyTownController {
         listener.onBulletinPostsDeleted(this._bulletinBoard.posts),
       );
     }
-    return { deletedCount: postsToDelete.length };
+    return postsToDelete.length;
   }
 
   /**

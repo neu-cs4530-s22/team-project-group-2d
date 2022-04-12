@@ -412,7 +412,7 @@ describe('CoveyTownController', () => {
       expect(posts.length).toBe(1);
       const result = testingTown.deleteBulletinPosts();
       expect(posts.length).toBe(1);
-      expect(result.deletedCount).toBe(0);
+      expect(result).toBe(0);
     });
     it('should delete posts that have been posted at least 24 hours ago', () => {
       let { posts } = testingTown.bulletinBoard;
@@ -424,7 +424,7 @@ describe('CoveyTownController', () => {
       const result = testingTown.deleteBulletinPosts();
       posts = testingTown.bulletinBoard.posts;
       expect(posts.length).toBe(0);
-      expect(result.deletedCount).toBe(1);
+      expect(result).toBe(1);
     });
     it('should delete posts that have been posted exactly 24 hours + 1 millisecond ago', () => {
       let { posts } = testingTown.bulletinBoard;
@@ -436,9 +436,9 @@ describe('CoveyTownController', () => {
       const result = testingTown.deleteBulletinPosts();
       posts = testingTown.bulletinBoard.posts;
       expect(posts.length).toBe(0);
-      expect(result.deletedCount).toBe(1);
+      expect(result).toBe(1);
     });
-    it('should not delete posts that have been posted exactly 24 hours + 1 milliseconds ago', () => {
+    it('should not delete posts that have been posted exactly 24 hours - 1 milliseconds ago', () => {
       let { posts } = testingTown.bulletinBoard;
       jest.useFakeTimers('modern');
       jest.setSystemTime(new Date(Date.now() - 3600 * 1000 * 24 + 1));
@@ -448,7 +448,7 @@ describe('CoveyTownController', () => {
       const result = testingTown.deleteBulletinPosts();
       posts = testingTown.bulletinBoard.posts;
       expect(posts.length).toBe(1);
-      expect(result.deletedCount).toBe(0);
+      expect(result).toBe(0);
     });
     it('should delete all posts that have been posted at least 24 hours ago', () => {
       let { posts } = testingTown.bulletinBoard;
@@ -463,7 +463,7 @@ describe('CoveyTownController', () => {
       const result = testingTown.deleteBulletinPosts();
       posts = testingTown.bulletinBoard.posts;
       expect(posts.length).toBe(1);
-      expect(result.deletedCount).toBe(3);
+      expect(result).toBe(3);
     });
     it('should delete a post on the town bulletin board and emit an onBulletinDeleted', () => {
       const mockListener = mock<CoveyTownListener>();
