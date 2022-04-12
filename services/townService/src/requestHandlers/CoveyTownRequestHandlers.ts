@@ -1,4 +1,5 @@
 import assert from 'assert';
+import cron from 'node-cron';
 import { Socket } from 'socket.io';
 import {
   ConversationAreaCreateRequest,
@@ -152,6 +153,9 @@ export function townCreateHandler(
     };
   }
   const newTown = townsStore.createTown(requestData.friendlyName, requestData.isPubliclyListed);
+  cron.schedule('* 0 * * * *', () => {
+    newTown.deleteBulletinPosts();
+  });
   return {
     isOK: true,
     response: {

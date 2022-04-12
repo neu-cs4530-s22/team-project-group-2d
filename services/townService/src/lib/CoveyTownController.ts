@@ -275,6 +275,14 @@ export default class CoveyTownController {
     return newPost.toBulletinPostSchema();
   }
 
+  /**
+   * Deletes all posts in this current town on the bulletin board that are greater than 1 day (24 hours)
+   * old. Removes all such posts from current board
+   *
+   * Notifies any CoveyTownListeners that posts have been deleted by passing the list of remaining posts.
+   *
+   * @returns an object containing a value which indicates the number of posts that were deleted
+   */
   deleteBulletinPosts(): DeletedPostsResponse {
     const dayBefore = new Date(Date.now() - 3600 * 1000 * 24);
     const postsToDelete = this._bulletinBoard.posts.filter(post => post.createdAt < dayBefore);
