@@ -5,7 +5,6 @@ import {
   ServerConversationArea,
 } from '../client/TownsServiceClient';
 import { ChatMessage, UserLocation } from '../CoveyTypes';
-import { createPost, deletePostsBeforeDate } from '../models/posts/dao';
 import ServerBulletinBoard from '../types/BulletinBoard';
 import ServerBulletinPost, {
   BulletinPostSchema,
@@ -254,7 +253,7 @@ export default class CoveyTownController {
    *
    * @returns The new bulletin post or undefined if there was an error while creating
    */
-  async addBulletinPost(_bulletinPost: PostCreateRequest): Promise<BulletinPostSchema | undefined> {
+  addBulletinPost(_bulletinPost: PostCreateRequest): BulletinPostSchema | undefined {
     if (
       _bulletinPost.coveyTownID !== this.coveyTownID ||
       _bulletinPost.title === '' ||
@@ -270,22 +269,22 @@ export default class CoveyTownController {
       _bulletinPost.text,
       _bulletinPost.coveyTownID,
     );
-    await createPost(newPost.toBulletinPostSchema());
     this._bulletinBoard.addPost(newPost);
 
     this._listeners.forEach(listener => listener.onBulletinPostAdded(newPost));
     return newPost.toBulletinPostSchema();
   }
 
-  async deleteBulletinPosts(): Promise<DeletedPostsResponse> {
+  deleteBulletinPosts(): DeletedPostsResponse {
     const dayBefore = new Date(Date.now() - 3600 * 1000 * 24);
-    const deletePostsResponse = await deletePostsBeforeDate(dayBefore);
-    console.log(dayBefore);
-    console.log(this._bulletinBoard);
     const postsToDelete = this._bulletinBoard.posts.filter(post => post.createdAt < dayBefore);
-    this._bulletinBoard.deletePosts(new Set(postsToDelete));
-    console.log(this._bulletinBoard);
-    return deletePostsResponse;
+    this._bulletinBoard.deletePosts(postsToDelete);
+    if (postsToDelete.length > 0) {
+      this._listeners.forEach(listener =>
+        listener.onBulletinPostsDeleted(this._bulletinBoard.posts),
+      );
+    }
+    return { deletedCount: postsToDelete.length };
   }
 
   /**
