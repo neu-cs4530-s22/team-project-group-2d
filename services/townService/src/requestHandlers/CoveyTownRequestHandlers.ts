@@ -116,7 +116,7 @@ export async function townJoinHandler(
     };
   }
   const newPlayer = new Player(requestData.userName);
-  console.log(await coveyTownController.deleteBulletinPosts());
+  coveyTownController.deleteBulletinPosts();
   const newSession = await coveyTownController.addPlayer(newPlayer);
   assert(newSession.videoToken);
   return {
@@ -257,6 +257,9 @@ function townSocketAdapter(socket: Socket): CoveyTownListener {
     },
     onBulletinPostAdded(newPost: ServerBulletinPost) {
       socket.emit('newBulletinPost', newPost);
+    },
+    onBulletinPostsDeleted(remainingPosts: ServerBulletinPost[]) {
+      socket.emit('bulletinPostsDeleted', remainingPosts);
     },
   };
 }
