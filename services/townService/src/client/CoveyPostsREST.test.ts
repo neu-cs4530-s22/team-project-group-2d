@@ -3,6 +3,7 @@ import Express from 'express';
 import http from 'http';
 import { nanoid } from 'nanoid';
 import { AddressInfo } from 'net';
+import CoveyTownsStore from '../lib/CoveyTownsStore';
 import addPostRoutes from '../router/posts';
 import addTownRoutes from '../router/towns';
 import TownsServiceClient from './TownsServiceClient';
@@ -51,10 +52,11 @@ describe('PostsServiceAPIREST', () => {
     apiClient = new TownsServiceClient(`http://127.0.0.1:${address.port}`);
   });
   afterAll(async () => {
+    CoveyTownsStore.getInstance().deleteScheduler.stop();
     await server.close();
   });
   describe('BulletinPostCreateAPI', () => {
-    let testingTown : TestTownData;
+    let testingTown: TestTownData;
     beforeEach(async () => {
       testingTown = await createTownForTesting(undefined, true);
     });
@@ -123,5 +125,4 @@ describe('PostsServiceAPIREST', () => {
       expect(post.coveyTownID).toBe(testingTown.coveyTownID);
     });
   });
-  
 });

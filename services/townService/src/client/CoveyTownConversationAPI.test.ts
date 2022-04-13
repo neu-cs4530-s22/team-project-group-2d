@@ -1,13 +1,13 @@
 import CORS from 'cors';
 import Express from 'express';
 import http from 'http';
+import { mock, mockReset } from 'jest-mock-extended';
 import { nanoid } from 'nanoid';
 import { AddressInfo } from 'net';
-import { mock, mockReset } from 'jest-mock-extended';
 import CoveyTownController from '../lib/CoveyTownController';
 import CoveyTownsStore from '../lib/CoveyTownsStore';
-import addTownRoutes from '../router/towns';
 import * as requestHandlers from '../requestHandlers/CoveyTownRequestHandlers';
+import addTownRoutes from '../router/towns';
 import { createConversationForTesting } from './TestUtils';
 import TownsServiceClient, { ServerConversationArea } from './TownsServiceClient';
 
@@ -54,6 +54,7 @@ describe('Create Conversation Area API', () => {
     apiClient = new TownsServiceClient(`http://127.0.0.1:${address.port}`);
   });
   afterAll(async () => {
+    CoveyTownsStore.getInstance().deleteScheduler.stop();
     await server.close();
   });
   it('Executes without error when creating a new conversation', async () => {
@@ -70,7 +71,6 @@ describe('Create Conversation Area API', () => {
   });
 });
 describe('conversationAreaCreateHandler', () => {
-
   const mockCoveyTownStore = mock<CoveyTownsStore>();
   const mockCoveyTownController = mock<CoveyTownController>();
   beforeAll(() => {
@@ -83,9 +83,14 @@ describe('conversationAreaCreateHandler', () => {
     mockReset(mockCoveyTownStore);
     mockCoveyTownStore.getControllerForTown.mockReturnValue(mockCoveyTownController);
   });
-  it('Checks for a valid session token before creating a conversation area', ()=>{
+  it('Checks for a valid session token before creating a conversation area', () => {
     const coveyTownID = nanoid();
-    const conversationArea :ServerConversationArea = { boundingBox: { height: 1, width: 1, x:1, y:1 }, label: nanoid(), occupantsByID: [], topic: nanoid() };
+    const conversationArea: ServerConversationArea = {
+      boundingBox: { height: 1, width: 1, x: 1, y: 1 },
+      label: nanoid(),
+      occupantsByID: [],
+      topic: nanoid(),
+    };
     const invalidSessionToken = nanoid();
 
     // Make sure to return 'undefined' regardless of what session token is passed

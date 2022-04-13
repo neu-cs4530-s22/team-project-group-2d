@@ -150,6 +150,9 @@ describe('CoveyTownController', () => {
       player = new Player('test player');
       session = await testingTown.addPlayer(player);
     });
+    afterAll(() => {
+      CoveyTownsStore.getInstance().deleteScheduler.stop();
+    });
     it('should reject connections with invalid town IDs by calling disconnect', async () => {
       TestUtils.setSessionTokenAndTownID(nanoid(), session.sessionToken, mockSocket);
       townSubscriptionHandler(mockSocket);
@@ -391,6 +394,104 @@ describe('CoveyTownController', () => {
       expect(posts[0].toBulletinPostSchema()).toEqual(postOne);
       expect(posts[1].toBulletinPostSchema()).toEqual(postTwo);
       expect(mockListener.onBulletinPostAdded).toBeCalledTimes(2);
+    });
+  });
+  describe('deleteBulletinPosts', () => {
+    let testingTown: CoveyTownController;
+    let defaultRequest: PostCreateRequest;
+    beforeEach(() => {
+      const townName = `addBulletinPost test town ${nanoid()}`;
+      testingTown = new CoveyTownController(townName, false);
+      defaultRequest = {
+        title: 'title',
+        text: 'text',
+        author: 'author',
+        coveyTownID: testingTown.coveyTownID,
+      };
+    });
+    it('should not delete posts that have been posted within 24 hours', () => {
+      const { posts } = testingTown.bulletinBoard;
+      testingTown.addBulletinPost(defaultRequest);
+      expect(posts.length).toBe(1);
+      const result = testingTown.deleteBulletinPosts();
+      expect(posts.length).toBe(1);
+      expect(result).toBe(0);
+    });
+    it('should delete posts that have been posted at least 24 hours ago', () => {
+      let { posts } = testingTown.bulletinBoard;
+      jest.useFakeTimers('modern');
+      jest.setSystemTime(new Date(2020, 3, 1));
+      testingTown.addBulletinPost(defaultRequest);
+      jest.useRealTimers();
+      expect(posts.length).toBe(1);
+      const result = testingTown.deleteBulletinPosts();
+      posts = testingTown.bulletinBoard.posts;
+      expect(posts.length).toBe(0);
+      expect(result).toBe(1);
+    });
+    it('should delete posts that have been posted exactly 24 hours + 1 millisecond ago', () => {
+      let { posts } = testingTown.bulletinBoard;
+      jest.useFakeTimers('modern');
+      jest.setSystemTime(new Date(Date.now() - 3600 * 1000 * 24 - 1));
+      testingTown.addBulletinPost(defaultRequest);
+      jest.useRealTimers();
+      expect(posts.length).toBe(1);
+      const result = testingTown.deleteBulletinPosts();
+      posts = testingTown.bulletinBoard.posts;
+      expect(posts.length).toBe(0);
+      expect(result).toBe(1);
+    });
+    it('should not delete posts that have been posted exactly 24 hours - 1 milliseconds ago', () => {
+      let { posts } = testingTown.bulletinBoard;
+      jest.useFakeTimers('modern');
+      jest.setSystemTime(new Date(Date.now() - 3600 * 1000 * 24 + 1));
+      testingTown.addBulletinPost(defaultRequest);
+      jest.useRealTimers();
+      expect(posts.length).toBe(1);
+      const result = testingTown.deleteBulletinPosts();
+      posts = testingTown.bulletinBoard.posts;
+      expect(posts.length).toBe(1);
+      expect(result).toBe(0);
+    });
+    it('should delete all posts that have been posted at least 24 hours ago', () => {
+      let { posts } = testingTown.bulletinBoard;
+      jest.useFakeTimers('modern');
+      jest.setSystemTime(new Date(2020, 3, 1));
+      testingTown.addBulletinPost(defaultRequest);
+      testingTown.addBulletinPost(defaultRequest);
+      testingTown.addBulletinPost(defaultRequest);
+      jest.useRealTimers();
+      testingTown.addBulletinPost(defaultRequest);
+      expect(posts.length).toBe(4);
+      const result = testingTown.deleteBulletinPosts();
+      posts = testingTown.bulletinBoard.posts;
+      expect(posts.length).toBe(1);
+      expect(result).toBe(3);
+    });
+    it('should delete a post on the town bulletin board and emit an onBulletinDeleted', () => {
+      const mockListener = mock<CoveyTownListener>();
+      testingTown.addTownListener(mockListener);
+      jest.useFakeTimers('modern');
+      jest.setSystemTime(new Date(2020, 3, 1));
+      testingTown.addBulletinPost(defaultRequest);
+      jest.useRealTimers();
+      let { posts } = testingTown.bulletinBoard;
+      expect(posts.length).toBe(1);
+      testingTown.deleteBulletinPosts();
+      posts = testingTown.bulletinBoard.posts;
+      expect(posts.length).toBe(0);
+      expect(mockListener.onBulletinPostsDeleted).toBeCalledTimes(1);
+    });
+    it('should not delete a post on the town bulletin board and not emit an onBulletinDeleted if no posts are deleted', () => {
+      const mockListener = mock<CoveyTownListener>();
+      testingTown.addTownListener(mockListener);
+      testingTown.addBulletinPost(defaultRequest);
+      let { posts } = testingTown.bulletinBoard;
+      expect(posts.length).toBe(1);
+      testingTown.deleteBulletinPosts();
+      posts = testingTown.bulletinBoard.posts;
+      expect(posts.length).toBe(1);
+      expect(mockListener.onBulletinPostsDeleted).toBeCalledTimes(0);
     });
   });
 });

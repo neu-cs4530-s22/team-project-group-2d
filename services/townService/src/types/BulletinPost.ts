@@ -8,6 +8,9 @@ export interface BulletinPostSchema {
   coveyTownID: string;
   createdAt: Date;
 }
+export interface DeletedPostsResponse {
+  deletedCount: number;
+}
 
 export default class ServerBulletinPost {
   private _id: string;
@@ -75,11 +78,11 @@ export default class ServerBulletinPost {
     return this._createdAt;
   }
 
-  get coveyTownID() : string {
+  get coveyTownID(): string {
     return this._coveyTownID;
   }
 
-  toBulletinPostSchema() : BulletinPostSchema {
+  toBulletinPostSchema(): BulletinPostSchema {
     return {
       id: this._id,
       title: this._title,

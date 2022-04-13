@@ -1,8 +1,13 @@
-import { deletePost } from '../models/posts/dao';
+import {
+  PostCreateRequest,
+  PostCreateResponse,
+  ResponseEnvelope,
+} from '../client/TownsServiceClient';
 import CoveyTownsStore from '../lib/CoveyTownsStore';
-import { PostCreateRequest, PostCreateResponse, PostDeleteRequest, ResponseEnvelope } from '../client/TownsServiceClient';
 
-export function postCreateHandler(requestData: PostCreateRequest): ResponseEnvelope<PostCreateResponse> {
+export default function postCreateHandler(
+  requestData: PostCreateRequest,
+): ResponseEnvelope<PostCreateResponse> {
   const townsStore = CoveyTownsStore.getInstance();
   const coveyTownController = townsStore.getControllerForTown(requestData.coveyTownID);
   if (!coveyTownController) {
@@ -25,13 +30,5 @@ export function postCreateHandler(requestData: PostCreateRequest): ResponseEnvel
     response: {
       post: newPost,
     },
-  };
-}
-
-export function postDeleteHandler(requestData: PostDeleteRequest): ResponseEnvelope<Record<string, null>> {
-  deletePost(requestData.postID);
-  return {
-    isOK: true,
-    response: {},
   };
 }

@@ -1,5 +1,6 @@
-import CoveyTownController from './CoveyTownController';
+import cron from 'node-cron';
 import { CoveyTownList } from '../CoveyTypes';
+import CoveyTownController from './CoveyTownController';
 
 function passwordMatches(provided: string, expected: string): boolean {
   if (provided === expected) {
@@ -16,9 +17,17 @@ export default class CoveyTownsStore {
 
   private _towns: CoveyTownController[] = [];
 
+  private _deleteScheduler: cron.ScheduledTask;
+
+  private constructor() {
+    this._deleteScheduler = cron.schedule('0 0 * * * *', () => {
+      this._towns.forEach(town => town.deleteBulletinPosts());
+    });
+  }
+
   /**
    * Retrieve the singleton CoveyTownsStore.
-   * 
+   *
    * There is only a single instance of the CoveyTownsStore - it follows the singleton pattern
    */
   static getInstance(): CoveyTownsStore {
@@ -26,6 +35,10 @@ export default class CoveyTownsStore {
       CoveyTownsStore._instance = new CoveyTownsStore();
     }
     return CoveyTownsStore._instance;
+  }
+
+  get deleteScheduler(): cron.ScheduledTask {
+    return this._deleteScheduler;
   }
 
   /**
@@ -41,7 +54,8 @@ export default class CoveyTownsStore {
    * @returns List of all publicly visible towns
    */
   getTowns(): CoveyTownList {
-    return this._towns.filter(townController => townController.isPubliclyListed)
+    return this._towns
+      .filter(townController => townController.isPubliclyListed)
       .map(townController => ({
         coveyTownID: townController.coveyTownID,
         friendlyName: townController.friendlyName,
@@ -52,8 +66,8 @@ export default class CoveyTownsStore {
 
   /**
    * Creates a new town, registering it in the Town Store, and returning that new town
-   * @param friendlyName 
-   * @param isPubliclyListed 
+   * @param friendlyName
+   * @param isPubliclyListed
    * @returns the new town controller
    */
   createTown(friendlyName: string, isPubliclyListed: boolean): CoveyTownController {
@@ -64,13 +78,18 @@ export default class CoveyTownsStore {
 
   /**
    * Updates an existing town. Validates that the provided password is valid
-   * @param coveyTownID 
-   * @param coveyTownPassword 
-   * @param friendlyName 
-   * @param makePublic 
+   * @param coveyTownID
+   * @param coveyTownPassword
+   * @param friendlyName
+   * @param makePublic
    * @returns true upon success, or false otherwise
    */
-  updateTown(coveyTownID: string, coveyTownPassword: string, friendlyName?: string, makePublic?: boolean): boolean {
+  updateTown(
+    coveyTownID: string,
+    coveyTownPassword: string,
+    friendlyName?: string,
+    makePublic?: boolean,
+  ): boolean {
     const existingTown = this.getControllerForTown(coveyTownID);
     if (existingTown && passwordMatches(coveyTownPassword, existingTown.townUpdatePassword)) {
       if (friendlyName !== undefined) {
@@ -90,8 +109,8 @@ export default class CoveyTownsStore {
   /**
    * Deletes a given town from this towns store, destroying the town controller in the process.
    * Checks that the password is valid before deletion
-   * @param coveyTownID 
-   * @param coveyTownPassword 
+   * @param coveyTownID
+   * @param coveyTownPassword
    * @returns true if the town exists and is successfully deleted, false otherwise
    */
   deleteTown(coveyTownID: string, coveyTownPassword: string): boolean {
@@ -103,5 +122,4 @@ export default class CoveyTownsStore {
     }
     return false;
   }
-
 }

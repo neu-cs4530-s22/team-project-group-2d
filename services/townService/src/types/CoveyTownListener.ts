@@ -34,7 +34,7 @@ export default interface CoveyTownListener {
    * Called when a conversation area is created or updated
    * @param conversationArea the conversation area that is updated or created
    */
-  onConversationAreaUpdated(conversationArea: ServerConversationArea) : void;
+  onConversationAreaUpdated(conversationArea: ServerConversationArea): void;
 
   /**
    * Called when a conversation area is destroyed
@@ -53,4 +53,10 @@ export default interface CoveyTownListener {
    * @param newPost the new bulletin post that has been added
    */
   onBulletinPostAdded(newPost: ServerBulletinPost): void;
+
+  /**
+   * Called when a bulletin post is removed from the bulletin board
+   * @param remainingPosts the list of bulletin posts that reman after deletion
+   */
+  onBulletinPostsDeleted(remainingPosts: ServerBulletinPost[]): void;
 }

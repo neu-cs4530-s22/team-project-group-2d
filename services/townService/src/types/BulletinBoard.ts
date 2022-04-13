@@ -15,6 +15,10 @@ export default class ServerBulletinBoard {
     this._posts.push(post);
   }
 
+  deletePosts(postsToDelete: ServerBulletinPost[]): void {
+    this._posts = this._posts.filter(post => !postsToDelete.includes(post));
+  }
+
   sortPostsByTime(): void {
     this._posts.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
   }
