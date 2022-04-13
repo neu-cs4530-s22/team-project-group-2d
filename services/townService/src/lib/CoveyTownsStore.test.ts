@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid';
+import cron from 'node-cron';
 import { ServerConversationArea } from '../client/TownsServiceClient';
 import { ChatMessage } from '../CoveyTypes';
 import ServerBulletinPost from '../types/BulletinPost';
@@ -53,6 +54,13 @@ describe('CoveyTownsStore', () => {
   beforeEach(() => {
     mockCoveyListenerTownDestroyed.mockClear();
     mockCoveyListenerOtherFns.mockClear();
+  });
+  it('should schedule deleting on instance creation', () => {
+    const mock = jest.spyOn(cron, 'schedule');
+    const store1 = CoveyTownsStore.getInstance();
+    // store1.deleteScheduler.stop();
+    expect(mock).toBeCalledTimes(1);
+    mock.mockRestore();
   });
   it('should be a singleton', () => {
     const store1 = CoveyTownsStore.getInstance();
