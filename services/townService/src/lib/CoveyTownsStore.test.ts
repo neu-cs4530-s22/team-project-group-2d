@@ -58,7 +58,7 @@ describe('CoveyTownsStore', () => {
   it('should schedule deleting on instance creation', () => {
     const mock = jest.spyOn(cron, 'schedule');
     const store1 = CoveyTownsStore.getInstance();
-    // store1.deleteScheduler.stop();
+    store1.deleteScheduler.stop();
     expect(mock).toBeCalledTimes(1);
     mock.mockRestore();
   });
