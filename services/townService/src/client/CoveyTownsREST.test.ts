@@ -5,6 +5,7 @@ import http from 'http';
 import { nanoid } from 'nanoid';
 import { AddressInfo } from 'net';
 import CoveyTownController from '../lib/CoveyTownController';
+import CoveyTownsStore from '../lib/CoveyTownsStore';
 import addTownRoutes from '../router/towns';
 import TownsServiceClient, { TownListResponse } from './TownsServiceClient';
 
@@ -62,6 +63,7 @@ describe('TownsServiceAPIREST', () => {
     apiClient = new TownsServiceClient(`http://127.0.0.1:${address.port}`);
   });
   afterAll(async () => {
+    CoveyTownsStore.getInstance().deleteScheduler.stop();
     await server.close();
   });
   describe('CoveyTownCreateAPI', () => {

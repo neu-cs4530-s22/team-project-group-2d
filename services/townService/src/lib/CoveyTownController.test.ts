@@ -150,6 +150,9 @@ describe('CoveyTownController', () => {
       player = new Player('test player');
       session = await testingTown.addPlayer(player);
     });
+    afterAll(() => {
+      CoveyTownsStore.getInstance().deleteScheduler.stop();
+    });
     it('should reject connections with invalid town IDs by calling disconnect', async () => {
       TestUtils.setSessionTokenAndTownID(nanoid(), session.sessionToken, mockSocket);
       townSubscriptionHandler(mockSocket);
