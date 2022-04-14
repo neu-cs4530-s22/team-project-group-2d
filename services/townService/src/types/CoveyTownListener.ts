@@ -1,6 +1,6 @@
 import { ServerConversationArea } from '../client/TownsServiceClient';
 import { ChatMessage } from '../CoveyTypes';
-import ServerBulletinPost from './BulletinPost';
+import { BulletinPostSchema } from './BulletinPost';
 import Player from './Player';
 
 /**
@@ -52,11 +52,11 @@ export default interface CoveyTownListener {
    * Called when a bulletin post is added to the bulletin board
    * @param newPost the new bulletin post that has been added
    */
-  onBulletinPostAdded(newPost: ServerBulletinPost): void;
+  onBulletinPostAdded(newPost: BulletinPostSchema): void;
 
   /**
    * Called when a bulletin post is removed from the bulletin board
    * @param remainingPosts the list of bulletin posts that reman after deletion
    */
-  onBulletinPostsDeleted(remainingPosts: ServerBulletinPost[]): void;
+  onBulletinPostsDeleted(remainingPosts: BulletinPostSchema[]): void;
 }
