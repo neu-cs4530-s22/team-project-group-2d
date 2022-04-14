@@ -23,7 +23,7 @@ export default function BulletinPost({title, author, createdAt, text, mt=5} : Bu
             fontSize='sm'
             textTransform='uppercase'
             style={{float: 'right'}}
-            isTruncated>{createdAt.toLocaleString([], {hour: '2-digit', minute: '2-digit'})}</Text>
+            isTruncated>{createdAt.toLocaleString([], {month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'})}</Text>
         <Text fontSize='sm' mt={5}>{text}</Text>
     </Box>)
 }
