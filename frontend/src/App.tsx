@@ -13,6 +13,7 @@ import React, {
 import { BrowserRouter } from 'react-router-dom';
 import { io, Socket } from 'socket.io-client';
 import './App.css';
+import { BulletinPostSchema } from './classes/BulletinPost';
 import ConversationArea, { ServerConversationArea } from './classes/ConversationArea';
 import Player, { ServerPlayer, UserLocation } from './classes/Player';
 import TownsServiceClient, { TownJoinResponse } from './classes/TownsServiceClient';
@@ -50,6 +51,7 @@ type CoveyAppUpdate =
         myPlayerID: string;
         socket: Socket;
         emitMovement: (location: UserLocation) => void;
+        bulletinPosts: BulletinPostSchema[];
       };
     }
   | { action: 'disconnect' };
@@ -65,6 +67,7 @@ function defaultAppState(): CoveyAppState {
     socket: null,
     emitMovement: () => {},
     apiClient: new TownsServiceClient(),
+    bulletinPosts: [],
   };
 }
 function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyAppState {
@@ -78,6 +81,7 @@ function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyApp
     socket: state.socket,
     emitMovement: state.emitMovement,
     apiClient: state.apiClient,
+    bulletinPosts: state.bulletinPosts
   };
 
   switch (update.action) {
@@ -90,6 +94,7 @@ function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyApp
       nextState.userName = update.data.userName;
       nextState.emitMovement = update.data.emitMovement;
       nextState.socket = update.data.socket;
+      nextState.bulletinPosts = update.data.bulletinPosts;
       break;
     case 'disconnect':
       state.socket?.disconnect();
@@ -130,6 +135,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
   const [nearbyPlayers, setNearbyPlayers] = useState<Player[]>([]);
   // const [currentLocation, setCurrentLocation] = useState<UserLocation>({moving: false, rotation: 'front', x: 0, y: 0});
   const [conversationAreas, setConversationAreas] = useState<ConversationArea[]>([]);
+  const [bulletinPosts, setBulletinPosts] = useState<BulletinPostSchema[]>([]);
 
   const setupGameController = useCallback(
     async (initData: TownJoinResponse) => {
@@ -235,6 +241,15 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
         setConversationAreas(localConversationAreas);
         recalculateNearbyPlayers();
       });
+      socket.on('newBulletinPost', (newPost: BulletinPostSchema) => {
+        const posts = bulletinPosts;
+        posts.push(newPost);
+        setBulletinPosts(posts);
+        console.log(posts);
+      });
+      socket.on('bulletinPostsDeleted', (remainingPosts: BulletinPostSchema[]) => {
+        setBulletinPosts(remainingPosts);
+      });
       dispatchAppUpdate({
         action: 'doConnect',
         data: {
@@ -246,6 +261,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
           townIsPubliclyListed: video.isPubliclyListed,
           emitMovement,
           socket,
+          bulletinPosts
         },
       });
 
@@ -257,6 +273,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
       setPlayersInTown,
       setNearbyPlayers,
       setConversationAreas,
+      bulletinPosts
     ],
   );
   const videoInstance = Video.instance();
