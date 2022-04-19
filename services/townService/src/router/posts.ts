@@ -1,11 +1,10 @@
 import express, { Express } from 'express';
 import { Server } from 'http';
 import { StatusCodes } from 'http-status-codes';
-import io from 'socket.io';
 import postCreateHandler from '../requestHandlers/BulletinPostRequestHandlers';
 import { logError } from '../Utils';
 
-export default function addPostRoutes(http: Server, app: Express): io.Server {
+export default function addPostRoutes(app: Express): void {
   /*
    * Create a new post
    */
@@ -30,7 +29,4 @@ export default function addPostRoutes(http: Server, app: Express): io.Server {
    * List all posts for a town
    */
   app.get('/posts/:townID', express.json(), async () => {});
-
-  const socketServer = new io.Server(http, { cors: { origin: '*' } });
-  return socketServer;
 }

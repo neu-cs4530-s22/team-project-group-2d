@@ -245,7 +245,6 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
         const posts = bulletinPosts;
         posts.push(newPost);
         setBulletinPosts(posts);
-        console.log(posts);
       });
       socket.on('bulletinPostsDeleted', (remainingPosts: BulletinPostSchema[]) => {
         setBulletinPosts(remainingPosts);

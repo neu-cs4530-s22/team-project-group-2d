@@ -11,7 +11,7 @@ app.use(CORS());
 const server = http.createServer(app);
 
 addTownRoutes(server, app);
-addPostRoutes(server, app);
+addPostRoutes(app);
 
 server.listen(process.env.PORT || 8081, () => {
   const address = server.address() as AddressInfo;
