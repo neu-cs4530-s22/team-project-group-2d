@@ -1,10 +1,6 @@
 import BulletinPost from './BulletinPost';
 
 
-export type BulletinBoardListener = {
-  onBulletinPostAdded?: (newTopic: string | undefined) => void;
-  onOccupantsChange?: (newOccupants: string[]) => void;
-};
 export default class BulletinBoard {
   private _posts: BulletinPost[] = [];
 
