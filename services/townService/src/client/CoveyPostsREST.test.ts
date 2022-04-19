@@ -45,7 +45,7 @@ describe('PostsServiceAPIREST', () => {
     server = http.createServer(app);
 
     addTownRoutes(server, app);
-    addPostRoutes(server, app);
+    addPostRoutes(app);
     await server.listen();
     const address = server.address() as AddressInfo;
 
