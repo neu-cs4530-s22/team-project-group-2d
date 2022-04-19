@@ -63,10 +63,7 @@ export default function BulletinBoardModal({
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            {bulletinPosts.map(post => {
-              const { id, title, author, createdAt, text } = post;
-              return <BulletinPost key={id} title={title} author={author} createdAt={createdAt} text={text} mt={5} />;
-            })}
+            {bulletinPosts.map(post => <BulletinPost key={post.id} post={post} />)}
             {bulletinPosts.length === 0 && <Text>It seems like there aren&apos;t any post on the Bulletin Board yet. Add your own by clicking the Write a Post button. </Text>}
           </ModalBody>
           <ModalFooter>
