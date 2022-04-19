@@ -1,5 +1,6 @@
 import BulletinPost from './BulletinPost';
 
+
 export default class BulletinBoard {
   private _posts: BulletinPost[] = [];
 

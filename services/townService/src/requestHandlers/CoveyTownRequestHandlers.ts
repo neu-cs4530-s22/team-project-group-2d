@@ -6,7 +6,7 @@ import {
 } from '../client/TownsServiceClient';
 import { ChatMessage, CoveyTownList, UserLocation } from '../CoveyTypes';
 import CoveyTownsStore from '../lib/CoveyTownsStore';
-import ServerBulletinPost from '../types/BulletinPost';
+import { BulletinPostSchema } from '../types/BulletinPost';
 import CoveyTownListener from '../types/CoveyTownListener';
 import Player from '../types/Player';
 
@@ -255,10 +255,10 @@ function townSocketAdapter(socket: Socket): CoveyTownListener {
     onChatMessage(message: ChatMessage) {
       socket.emit('chatMessage', message);
     },
-    onBulletinPostAdded(newPost: ServerBulletinPost) {
+    onBulletinPostAdded(newPost: BulletinPostSchema) {
       socket.emit('newBulletinPost', newPost);
     },
-    onBulletinPostsDeleted(remainingPosts: ServerBulletinPost[]) {
+    onBulletinPostsDeleted(remainingPosts: BulletinPostSchema[]) {
       socket.emit('bulletinPostsDeleted', remainingPosts);
     },
   };

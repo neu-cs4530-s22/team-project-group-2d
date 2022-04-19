@@ -11,6 +11,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import React, { useMemo, useState } from 'react';
+import useCoveyAppState from '../../hooks/useCoveyAppState';
 import useMaybeVideo from '../../hooks/useMaybeVideo';
 import BulletinPost from '../BulletinBoard/BulletinPost';
 import CreatePostModal from '../BulletinBoard/CreatePostModal';
@@ -20,14 +21,6 @@ type BulletinBoardModalProps = {
   closeModal: () => void;
 };
 
-type BulletinPostObject = {
-  id: string;
-  title: string;
-  author: string;
-  createdAt: Date;
-  text: string;
-  mt?: number;
-};
 
 export default function BulletinBoardModal({
   isOpen,
@@ -49,67 +42,7 @@ export default function BulletinBoardModal({
     return <></>;
   }, [openCreatePost, setOpenCreatePost]);
 
-  const exampleDate = new Date;
-
-  const [bulletinPosts, setBulletinPosts] = useState<BulletinPostObject[]>([
-    {
-      id: '1',
-      title: 'Example Post',
-      author: 'Example Author',
-      createdAt: exampleDate,
-      text:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit.',
-      mt: 0,
-    },
-    {
-      id: '2',
-      title: 'Example Post',
-      author: 'Example Author',
-      createdAt: exampleDate,
-      text:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit.',
-    },
-    {
-      id: '3',
-      title: 'Example Post',
-      author: 'Example Author',
-      createdAt: exampleDate,
-      text:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit.',
-    },
-    {
-      id: '4',
-      title: 'Example Post',
-      author: 'Example Author',
-      createdAt: exampleDate,
-      text:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit.',
-    },
-    {
-      id: '5',
-      title: 'Example Post',
-      author: 'Example Author',
-      createdAt: exampleDate,
-      text:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit.',
-    },
-    {
-      id: '6',
-      title: 'Example Post',
-      author: 'Example Author',
-      createdAt: exampleDate,
-      text:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit.',
-    },
-    {
-      id: '7',
-      title: 'Example Post',
-      author: 'Example Author',
-      createdAt: exampleDate,
-      text:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit.',
-    },
-  ]);
+  const {bulletinPosts} = useCoveyAppState();
 
   return (
     <>
@@ -130,10 +63,7 @@ export default function BulletinBoardModal({
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            {bulletinPosts.map(post => {
-              const { id, title, author, createdAt, text, mt = 5 } = post;
-              return <BulletinPost key={id} title={title} author={author} createdAt={createdAt} text={text} mt={mt} />;
-            })}
+            {bulletinPosts.map(post => <BulletinPost key={post.id} post={post} />)}
             {bulletinPosts.length === 0 && <Text>It seems like there aren&apos;t any post on the Bulletin Board yet. Add your own by clicking the Write a Post button. </Text>}
           </ModalBody>
           <ModalFooter>
