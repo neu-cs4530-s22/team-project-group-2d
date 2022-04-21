@@ -1,5 +1,4 @@
 import { Socket } from 'socket.io-client';
-import { BulletinPostSchema } from './classes/BulletinPost';
 import { UserLocation } from './classes/Player';
 import TownsServiceClient from './classes/TownsServiceClient';
 
@@ -22,6 +21,5 @@ export type CoveyAppState = {
   myPlayerID: string,
   emitMovement: (location: UserLocation) => void,
   socket: Socket | null,
-  apiClient: TownsServiceClient,
-  bulletinPosts: BulletinPostSchema[],
+  apiClient: TownsServiceClient
 };

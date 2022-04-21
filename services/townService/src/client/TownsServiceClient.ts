@@ -53,6 +53,8 @@ export interface TownJoinResponse {
   isPubliclyListed: boolean;
   /** Conversation areas */
   conversationAreas: ServerConversationArea[];
+  /** Current bulletin posts in this town */
+  bulletinPosts: BulletinPostSchema[];
 }
 
 /**
