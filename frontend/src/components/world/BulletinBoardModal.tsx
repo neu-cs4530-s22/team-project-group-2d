@@ -42,7 +42,8 @@ export default function BulletinBoardModal({
     return <></>;
   }, [openCreatePost, setOpenCreatePost]);
 
-  const {bulletinPosts} = useCoveyAppState();
+  const appState = useCoveyAppState();
+  const bulletinPosts = appState.bulletinPosts.filter(post => post.coveyTownID === appState.currentTownID);
 
   return (
     <>
