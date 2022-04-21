@@ -267,8 +267,9 @@ export default class CoveyTownController {
       _bulletinPost.coveyTownID,
     );
     this._bulletinBoard.addPost(newPost);
-
-    this._listeners.forEach(listener => listener.onBulletinPostAdded(newPost.toBulletinPostSchema()));
+    this._listeners.forEach(listener =>
+      listener.onBulletinPostAdded(newPost.toBulletinPostSchema()),
+    );
     return newPost.toBulletinPostSchema();
   }
 
@@ -286,7 +287,7 @@ export default class CoveyTownController {
     this._bulletinBoard.deletePosts(postsToDelete);
     if (postsToDelete.length > 0) {
       this._listeners.forEach(listener =>
-        listener.onBulletinPostsDeleted(this._bulletinBoard.posts.map(post => post.toBulletinPostSchema())),
+        listener.onBulletinPostsDeleted(postsToDelete.map(post => post.toBulletinPostSchema())),
       );
     }
     return postsToDelete.length;

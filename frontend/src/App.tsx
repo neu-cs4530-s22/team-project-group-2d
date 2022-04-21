@@ -81,7 +81,7 @@ function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyApp
     socket: state.socket,
     emitMovement: state.emitMovement,
     apiClient: state.apiClient,
-    bulletinPosts: state.bulletinPosts
+    bulletinPosts: state.bulletinPosts,
   };
 
   switch (update.action) {
@@ -233,11 +233,13 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
       });
       socket.on('conversationDestroyed', (_conversationArea: ServerConversationArea) => {
         const existingArea = localConversationAreas.find(a => a.label === _conversationArea.label);
-        if(existingArea){
+        if (existingArea) {
           existingArea.topic = undefined;
           existingArea.occupants = [];
         }
-        localConversationAreas = localConversationAreas.filter(a => a.label !== _conversationArea.label);
+        localConversationAreas = localConversationAreas.filter(
+          a => a.label !== _conversationArea.label,
+        );
         setConversationAreas(localConversationAreas);
         recalculateNearbyPlayers();
       });
@@ -246,8 +248,17 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
         posts.push(newPost);
         setBulletinPosts(posts);
       });
-      socket.on('bulletinPostsDeleted', (remainingPosts: BulletinPostSchema[]) => {
-        setBulletinPosts(remainingPosts);
+      socket.on('bulletinPostsDeleted', (postsToDelete: BulletinPostSchema[]) => {
+        const postsToDeleteIds = postsToDelete.map(post => post.id);
+        const posts = bulletinPosts.filter(post => {
+          for (const postId in postsToDeleteIds) {
+            if (postId === post.id) {
+              return false;
+            }
+          }
+          return true;
+        });
+        setBulletinPosts(posts);
       });
       dispatchAppUpdate({
         action: 'doConnect',
@@ -260,7 +271,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
           townIsPubliclyListed: video.isPubliclyListed,
           emitMovement,
           socket,
-          bulletinPosts
+          bulletinPosts,
         },
       });
 
@@ -272,7 +283,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
       setPlayersInTown,
       setNearbyPlayers,
       setConversationAreas,
-      bulletinPosts
+      bulletinPosts,
     ],
   );
   const videoInstance = Video.instance();
