@@ -4,7 +4,6 @@ import Express from 'express';
 import http from 'http';
 import { nanoid } from 'nanoid';
 import { AddressInfo } from 'net';
-import CoveyTownController from '../lib/CoveyTownController';
 import CoveyTownsStore from '../lib/CoveyTownsStore';
 import addTownRoutes from '../router/towns';
 import TownsServiceClient, { TownListResponse } from './TownsServiceClient';

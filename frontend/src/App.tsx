@@ -29,13 +29,13 @@ import { Callback } from './components/VideoCall/VideoFrontend/types';
 import useConnectionOptions from './components/VideoCall/VideoFrontend/utils/useConnectionOptions/useConnectionOptions';
 import VideoOverlay from './components/VideoCall/VideoOverlay/VideoOverlay';
 import WorldMap from './components/world/WorldMap';
+import BulletinContext from './contexts/BulletinContext';
 import ConversationAreasContext from './contexts/ConversationAreasContext';
 import CoveyAppContext from './contexts/CoveyAppContext';
 import NearbyPlayersContext from './contexts/NearbyPlayersContext';
 import PlayerMovementContext, { PlayerMovementCallback } from './contexts/PlayerMovementContext';
 import PlayersInTownContext from './contexts/PlayersInTownContext';
 import VideoContext from './contexts/VideoContext';
-import BulletinContext from './contexts/BulletinContext';
 import { CoveyAppState } from './CoveyTypes';
 
 export const MOVEMENT_UPDATE_DELAY_MS = 0;
@@ -66,7 +66,7 @@ function defaultAppState(): CoveyAppState {
     userName: '',
     socket: null,
     emitMovement: () => {},
-    apiClient: new TownsServiceClient()
+    apiClient: new TownsServiceClient(),
   };
 }
 function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyAppState {
@@ -79,7 +79,7 @@ function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyApp
     userName: state.userName,
     socket: state.socket,
     emitMovement: state.emitMovement,
-    apiClient: state.apiClient
+    apiClient: state.apiClient,
   };
 
   switch (update.action) {
@@ -146,7 +146,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
       assert(townName);
       let localBulletinPosts = initData.bulletinPosts;
       setBulletinPosts(localBulletinPosts);
-      
+
       const socket = io(url, { auth: { token: sessionToken, coveyTownID: video.coveyTownID } });
       socket.on('disconnect', () => {
         dispatchAppUpdate({ action: 'disconnect' });
@@ -232,22 +232,31 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
       });
       socket.on('conversationDestroyed', (_conversationArea: ServerConversationArea) => {
         const existingArea = localConversationAreas.find(a => a.label === _conversationArea.label);
-        if(existingArea){
+        if (existingArea) {
           existingArea.topic = undefined;
           existingArea.occupants = [];
         }
-        localConversationAreas = localConversationAreas.filter(a => a.label !== _conversationArea.label);
+        localConversationAreas = localConversationAreas.filter(
+          a => a.label !== _conversationArea.label,
+        );
         setConversationAreas(localConversationAreas);
         recalculateNearbyPlayers();
       });
       socket.on('newBulletinPost', (newPost: BulletinPostSchema) => {
-        localBulletinPosts = localBulletinPosts.concat([
-          newPost
-        ]);
+        localBulletinPosts = localBulletinPosts.concat([newPost]);
         setBulletinPosts(localBulletinPosts);
       });
-      socket.on('bulletinPostsDeleted', (remainingPosts: BulletinPostSchema[]) => {
-        localBulletinPosts = [...remainingPosts];
+      socket.on('bulletinPostsDeleted', (postsToDelete: BulletinPostSchema[]) => {
+        const postsToDeleteIds = postsToDelete.map(post => post.id);
+        const posts = localBulletinPosts.filter(post => {
+          for (const postId in postsToDeleteIds) {
+            if (postId === post.id) {
+              return false;
+            }
+          }
+          return true;
+        });
+        localBulletinPosts = [...posts];
         setBulletinPosts(localBulletinPosts);
       });
       dispatchAppUpdate({
@@ -260,7 +269,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
           myPlayerID: gamePlayerID,
           townIsPubliclyListed: video.isPubliclyListed,
           emitMovement,
-          socket
+          socket,
         },
       });
 
@@ -272,7 +281,6 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
       setPlayersInTown,
       setNearbyPlayers,
       setConversationAreas,
-      bulletinPosts,
     ],
   );
   const videoInstance = Video.instance();
@@ -309,9 +317,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
             <PlayersInTownContext.Provider value={playersInTown}>
               <NearbyPlayersContext.Provider value={nearbyPlayers}>
                 <ConversationAreasContext.Provider value={conversationAreas}>
-                  <BulletinContext.Provider value={bulletinPosts}>
-                    {page}
-                  </BulletinContext.Provider>
+                  <BulletinContext.Provider value={bulletinPosts}>{page}</BulletinContext.Provider>
                 </ConversationAreasContext.Provider>
               </NearbyPlayersContext.Provider>
             </PlayersInTownContext.Provider>

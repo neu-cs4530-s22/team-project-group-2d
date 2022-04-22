@@ -261,8 +261,8 @@ function townSocketAdapter(socket: Socket): CoveyTownListener {
     onBulletinPostAdded(newPost: BulletinPostSchema) {
       socket.emit('newBulletinPost', newPost);
     },
-    onBulletinPostsDeleted(remainingPosts: BulletinPostSchema[]) {
-      socket.emit('bulletinPostsDeleted', remainingPosts);
+    onBulletinPostsDeleted(postsToDelete: BulletinPostSchema[]) {
+      socket.emit('bulletinPostsDeleted', postsToDelete);
     },
   };
 }

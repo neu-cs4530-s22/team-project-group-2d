@@ -267,8 +267,9 @@ export default class CoveyTownController {
       _bulletinPost.coveyTownID,
     );
     this._bulletinBoard.addPost(newPost);
-
-    this._listeners.forEach(listener => listener.onBulletinPostAdded(newPost.toBulletinPostSchema()));
+    this._listeners.forEach(listener =>
+      listener.onBulletinPostAdded(newPost.toBulletinPostSchema()),
+    );
     return newPost.toBulletinPostSchema();
   }
 
@@ -281,11 +282,11 @@ export default class CoveyTownController {
    * @returns an object containing a value which indicates the number of posts that were deleted
    */
   deleteBulletinPosts(): number {
-    const dayBefore = new Date(Date.now() - 3600 * 1000 * 24);
+    const dayBefore = new Date(Date.now() - 1000 * 3600 * 24);
     const postsToDelete = this._bulletinBoard.posts.filter(post => post.createdAt < dayBefore);
     this._bulletinBoard.deletePosts(postsToDelete);
     this._listeners.forEach(listener =>
-      listener.onBulletinPostsDeleted(this._bulletinBoard.posts.map(post => post.toBulletinPostSchema())),
+      listener.onBulletinPostsDeleted(postsToDelete.map(post => post.toBulletinPostSchema())),
     );
     return postsToDelete.length;
   }

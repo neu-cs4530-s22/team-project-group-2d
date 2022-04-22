@@ -1,5 +1,4 @@
 import express, { Express } from 'express';
-import { Server } from 'http';
 import { StatusCodes } from 'http-status-codes';
 import postCreateHandler from '../requestHandlers/BulletinPostRequestHandlers';
 import { logError } from '../Utils';
