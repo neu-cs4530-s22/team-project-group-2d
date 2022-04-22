@@ -248,7 +248,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
       });
       socket.on('bulletinPostsDeleted', (postsToDelete: BulletinPostSchema[]) => {
         const postsToDeleteIds = postsToDelete.map(post => post.id);
-        const posts = bulletinPosts.filter(post => {
+        const posts = localBulletinPosts.filter(post => {
           for (const postId in postsToDeleteIds) {
             if (postId === post.id) {
               return false;
@@ -256,6 +256,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
           }
           return true;
         });
+        console.log(posts);
         localBulletinPosts = [...posts];
         setBulletinPosts(localBulletinPosts);
       });
