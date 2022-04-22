@@ -120,6 +120,7 @@ export async function townJoinHandler(
   const newPlayer = new Player(requestData.userName);
   const newSession = await coveyTownController.addPlayer(newPlayer);
   assert(newSession.videoToken);
+  coveyTownController.bulletinBoard.sortPostsByTime();
   const posts = coveyTownController.bulletinBoard.posts.map(post => post.toBulletinPostSchema());
   return {
     isOK: true,

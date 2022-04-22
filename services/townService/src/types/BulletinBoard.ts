@@ -20,6 +20,6 @@ export default class ServerBulletinBoard {
   }
 
   sortPostsByTime(): void {
-    this._posts.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+    this._posts.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
 }
