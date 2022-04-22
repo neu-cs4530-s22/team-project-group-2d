@@ -97,7 +97,6 @@ function wrappedTownSelection() {
     emitMovement: () => {
     },
     apiClient: new TownsServiceClient(),
-    bulletinPosts: [],
   }}><ChatProvider>
     <TownSelection doLogin={doLoginMock}/></ChatProvider></CoveyAppContext.Provider></ChakraProvider>;
 }
