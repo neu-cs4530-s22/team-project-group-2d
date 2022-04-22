@@ -256,7 +256,6 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
           }
           return true;
         });
-        console.log(posts);
         localBulletinPosts = [...posts];
         setBulletinPosts(localBulletinPosts);
       });
@@ -282,7 +281,6 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
       setPlayersInTown,
       setNearbyPlayers,
       setConversationAreas,
-      bulletinPosts,
     ],
   );
   const videoInstance = Video.instance();
