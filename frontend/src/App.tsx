@@ -243,19 +243,12 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
         recalculateNearbyPlayers();
       });
       socket.on('newBulletinPost', (newPost: BulletinPostSchema) => {
-        localBulletinPosts = localBulletinPosts.concat([newPost]);
+        localBulletinPosts.unshift(newPost);
         setBulletinPosts(localBulletinPosts);
       });
       socket.on('bulletinPostsDeleted', (postsToDelete: BulletinPostSchema[]) => {
         const postsToDeleteIds = postsToDelete.map(post => post.id);
-        const posts = localBulletinPosts.filter(post => {
-          for (const postId in postsToDeleteIds) {
-            if (postId === post.id) {
-              return false;
-            }
-          }
-          return true;
-        });
+        const posts = localBulletinPosts.filter(post => !postsToDeleteIds.includes(post.id));
         localBulletinPosts = [...posts];
         setBulletinPosts(localBulletinPosts);
       });
