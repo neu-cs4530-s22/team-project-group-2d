@@ -285,11 +285,17 @@ export default class CoveyTownController {
     const dayBefore = new Date(Date.now() - 3600 * 1000 * 24);
     const postsToDelete = this._bulletinBoard.posts.filter(post => post.createdAt < dayBefore);
     this._bulletinBoard.deletePosts(postsToDelete);
+<<<<<<< HEAD
     if (postsToDelete.length > 0) {
       this._listeners.forEach(listener =>
         listener.onBulletinPostsDeleted(postsToDelete.map(post => post.toBulletinPostSchema())),
       );
     }
+=======
+    this._listeners.forEach(listener =>
+      listener.onBulletinPostsDeleted(this._bulletinBoard.posts.map(post => post.toBulletinPostSchema())),
+    );
+>>>>>>> main
     return postsToDelete.length;
   }
 

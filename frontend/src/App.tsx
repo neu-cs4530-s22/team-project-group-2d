@@ -29,6 +29,7 @@ import { Callback } from './components/VideoCall/VideoFrontend/types';
 import useConnectionOptions from './components/VideoCall/VideoFrontend/utils/useConnectionOptions/useConnectionOptions';
 import VideoOverlay from './components/VideoCall/VideoOverlay/VideoOverlay';
 import WorldMap from './components/world/WorldMap';
+import BulletinContext from './contexts/BulletinContext';
 import ConversationAreasContext from './contexts/ConversationAreasContext';
 import CoveyAppContext from './contexts/CoveyAppContext';
 import NearbyPlayersContext from './contexts/NearbyPlayersContext';
@@ -51,7 +52,6 @@ type CoveyAppUpdate =
         myPlayerID: string;
         socket: Socket;
         emitMovement: (location: UserLocation) => void;
-        bulletinPosts: BulletinPostSchema[];
       };
     }
   | { action: 'disconnect' };
@@ -67,7 +67,6 @@ function defaultAppState(): CoveyAppState {
     socket: null,
     emitMovement: () => {},
     apiClient: new TownsServiceClient(),
-    bulletinPosts: [],
   };
 }
 function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyAppState {
@@ -81,7 +80,6 @@ function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyApp
     socket: state.socket,
     emitMovement: state.emitMovement,
     apiClient: state.apiClient,
-    bulletinPosts: state.bulletinPosts,
   };
 
   switch (update.action) {
@@ -94,7 +92,6 @@ function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyApp
       nextState.userName = update.data.userName;
       nextState.emitMovement = update.data.emitMovement;
       nextState.socket = update.data.socket;
-      nextState.bulletinPosts = update.data.bulletinPosts;
       break;
     case 'disconnect':
       state.socket?.disconnect();
@@ -147,6 +144,8 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
       assert(video);
       const townName = video.townFriendlyName;
       assert(townName);
+      let localBulletinPosts = initData.bulletinPosts;
+      setBulletinPosts(localBulletinPosts);
 
       const socket = io(url, { auth: { token: sessionToken, coveyTownID: video.coveyTownID } });
       socket.on('disconnect', () => {
@@ -244,9 +243,8 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
         recalculateNearbyPlayers();
       });
       socket.on('newBulletinPost', (newPost: BulletinPostSchema) => {
-        const posts = bulletinPosts;
-        posts.push(newPost);
-        setBulletinPosts(posts);
+        localBulletinPosts = localBulletinPosts.concat([newPost]);
+        setBulletinPosts(localBulletinPosts);
       });
       socket.on('bulletinPostsDeleted', (postsToDelete: BulletinPostSchema[]) => {
         const postsToDeleteIds = postsToDelete.map(post => post.id);
@@ -258,7 +256,8 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
           }
           return true;
         });
-        setBulletinPosts(posts);
+        localBulletinPosts = [...posts];
+        setBulletinPosts(localBulletinPosts);
       });
       dispatchAppUpdate({
         action: 'doConnect',
@@ -271,7 +270,6 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
           townIsPubliclyListed: video.isPubliclyListed,
           emitMovement,
           socket,
-          bulletinPosts,
         },
       });
 
@@ -320,7 +318,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
             <PlayersInTownContext.Provider value={playersInTown}>
               <NearbyPlayersContext.Provider value={nearbyPlayers}>
                 <ConversationAreasContext.Provider value={conversationAreas}>
-                  {page}
+                  <BulletinContext.Provider value={bulletinPosts}>{page}</BulletinContext.Provider>
                 </ConversationAreasContext.Provider>
               </NearbyPlayersContext.Provider>
             </PlayersInTownContext.Provider>
