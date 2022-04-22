@@ -482,7 +482,7 @@ describe('CoveyTownController', () => {
       expect(posts.length).toBe(0);
       expect(mockListener.onBulletinPostsDeleted).toBeCalledTimes(1);
     });
-    it('should not delete a post on the town bulletin board and not emit an onBulletinDeleted if no posts are deleted', () => {
+    it('should not delete a post on the town bulletin board and still emit an onBulletinDeleted if no posts are deleted', () => {
       const mockListener = mock<CoveyTownListener>();
       testingTown.addTownListener(mockListener);
       testingTown.addBulletinPost(defaultRequest);
@@ -491,7 +491,7 @@ describe('CoveyTownController', () => {
       testingTown.deleteBulletinPosts();
       posts = testingTown.bulletinBoard.posts;
       expect(posts.length).toBe(1);
-      expect(mockListener.onBulletinPostsDeleted).toBeCalledTimes(0);
+      expect(mockListener.onBulletinPostsDeleted).toBeCalledTimes(1);
     });
   });
 });

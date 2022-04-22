@@ -11,6 +11,7 @@ import {
   Text,
 } from '@chakra-ui/react';
 import React, { useMemo, useState } from 'react';
+import useBulletinPosts from '../../hooks/useBulletinPosts';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
 import useMaybeVideo from '../../hooks/useMaybeVideo';
 import BulletinPost from '../BulletinBoard/BulletinPost';
@@ -28,6 +29,8 @@ export default function BulletinBoardModal({
 }: BulletinBoardModalProps): JSX.Element {
   const video = useMaybeVideo();
   const [openCreatePost, setOpenCreatePost] = useState(false);
+  const posts = useBulletinPosts();
+  const appState = useCoveyAppState();
   const createPostModal = useMemo(() => {
     if (openCreatePost) {
       return (
@@ -42,8 +45,7 @@ export default function BulletinBoardModal({
     return <></>;
   }, [openCreatePost, setOpenCreatePost]);
 
-  const appState = useCoveyAppState();
-  const bulletinPosts = appState.bulletinPosts.filter(post => post.coveyTownID === appState.currentTownID);
+  const bulletinPosts = posts.filter(post => post.coveyTownID === appState.currentTownID);
 
   return (
     <>

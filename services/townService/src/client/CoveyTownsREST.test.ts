@@ -234,17 +234,5 @@ describe('TownsServiceAPIREST', () => {
       expect(res2.coveySessionToken).toBeDefined();
       expect(res2.coveyUserID).toBeDefined();
     });
-    it('Confirms that deleting gets called when a player joins a town', async () => {
-      const pubTown1 = await createTownForTesting(undefined, true);
-      const mock = jest.spyOn(CoveyTownController.prototype, 'deleteBulletinPosts');
-      const res = await apiClient.joinTown({
-        userName: nanoid(),
-        coveyTownID: pubTown1.coveyTownID,
-      });
-      expect(res.coveySessionToken).toBeDefined();
-      expect(res.coveyUserID).toBeDefined();
-      expect(mock).toBeCalledTimes(1);
-      mock.mockRestore();
-    });
   });
 });

@@ -35,6 +35,7 @@ import NearbyPlayersContext from './contexts/NearbyPlayersContext';
 import PlayerMovementContext, { PlayerMovementCallback } from './contexts/PlayerMovementContext';
 import PlayersInTownContext from './contexts/PlayersInTownContext';
 import VideoContext from './contexts/VideoContext';
+import BulletinContext from './contexts/BulletinContext';
 import { CoveyAppState } from './CoveyTypes';
 
 export const MOVEMENT_UPDATE_DELAY_MS = 0;
@@ -51,7 +52,6 @@ type CoveyAppUpdate =
         myPlayerID: string;
         socket: Socket;
         emitMovement: (location: UserLocation) => void;
-        bulletinPosts: BulletinPostSchema[];
       };
     }
   | { action: 'disconnect' };
@@ -66,8 +66,7 @@ function defaultAppState(): CoveyAppState {
     userName: '',
     socket: null,
     emitMovement: () => {},
-    apiClient: new TownsServiceClient(),
-    bulletinPosts: [],
+    apiClient: new TownsServiceClient()
   };
 }
 function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyAppState {
@@ -80,8 +79,7 @@ function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyApp
     userName: state.userName,
     socket: state.socket,
     emitMovement: state.emitMovement,
-    apiClient: state.apiClient,
-    bulletinPosts: state.bulletinPosts
+    apiClient: state.apiClient
   };
 
   switch (update.action) {
@@ -94,7 +92,6 @@ function appStateReducer(state: CoveyAppState, update: CoveyAppUpdate): CoveyApp
       nextState.userName = update.data.userName;
       nextState.emitMovement = update.data.emitMovement;
       nextState.socket = update.data.socket;
-      nextState.bulletinPosts = update.data.bulletinPosts;
       break;
     case 'disconnect':
       state.socket?.disconnect();
@@ -147,7 +144,9 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
       assert(video);
       const townName = video.townFriendlyName;
       assert(townName);
-
+      let localBulletinPosts = initData.bulletinPosts;
+      setBulletinPosts(localBulletinPosts);
+      
       const socket = io(url, { auth: { token: sessionToken, coveyTownID: video.coveyTownID } });
       socket.on('disconnect', () => {
         dispatchAppUpdate({ action: 'disconnect' });
@@ -242,12 +241,14 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
         recalculateNearbyPlayers();
       });
       socket.on('newBulletinPost', (newPost: BulletinPostSchema) => {
-        const posts = bulletinPosts;
-        posts.push(newPost);
-        setBulletinPosts(posts);
+        localBulletinPosts = localBulletinPosts.concat([
+          newPost
+        ]);
+        setBulletinPosts(localBulletinPosts);
       });
       socket.on('bulletinPostsDeleted', (remainingPosts: BulletinPostSchema[]) => {
-        setBulletinPosts(remainingPosts);
+        localBulletinPosts = [...remainingPosts];
+        setBulletinPosts(localBulletinPosts);
       });
       dispatchAppUpdate({
         action: 'doConnect',
@@ -259,8 +260,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
           myPlayerID: gamePlayerID,
           townIsPubliclyListed: video.isPubliclyListed,
           emitMovement,
-          socket,
-          bulletinPosts
+          socket
         },
       });
 
@@ -272,7 +272,7 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
       setPlayersInTown,
       setNearbyPlayers,
       setConversationAreas,
-      bulletinPosts
+      bulletinPosts,
     ],
   );
   const videoInstance = Video.instance();
@@ -309,7 +309,9 @@ function App(props: { setOnDisconnect: Dispatch<SetStateAction<Callback | undefi
             <PlayersInTownContext.Provider value={playersInTown}>
               <NearbyPlayersContext.Provider value={nearbyPlayers}>
                 <ConversationAreasContext.Provider value={conversationAreas}>
-                  {page}
+                  <BulletinContext.Provider value={bulletinPosts}>
+                    {page}
+                  </BulletinContext.Provider>
                 </ConversationAreasContext.Provider>
               </NearbyPlayersContext.Provider>
             </PlayersInTownContext.Provider>

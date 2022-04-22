@@ -41,6 +41,8 @@ export interface TownJoinResponse {
   isPubliclyListed: boolean;
   /** Conversation areas currently active in this town */
   conversationAreas: ServerConversationArea[];
+  /** Current bulletin posts in this town */
+  bulletinPosts: BulletinPostSchema[];
 }
 
 /**
@@ -116,9 +118,9 @@ export async function townJoinHandler(
     };
   }
   const newPlayer = new Player(requestData.userName);
-  coveyTownController.deleteBulletinPosts();
   const newSession = await coveyTownController.addPlayer(newPlayer);
   assert(newSession.videoToken);
+  const posts = coveyTownController.bulletinBoard.posts.map(post => post.toBulletinPostSchema());
   return {
     isOK: true,
     response: {
@@ -129,6 +131,7 @@ export async function townJoinHandler(
       friendlyName: coveyTownController.friendlyName,
       isPubliclyListed: coveyTownController.isPubliclyListed,
       conversationAreas: coveyTownController.conversationAreas,
+      bulletinPosts: posts,
     },
   };
 }
@@ -288,6 +291,7 @@ export function townSubscriptionHandler(socket: Socket): void {
   // events that the socket protocol knows about
   const listener = townSocketAdapter(socket);
   townController.addTownListener(listener);
+  townController.deleteBulletinPosts();
 
   // Register an event listener for the client socket: if the client disconnects,
   // clean up our listener adapter, and then let the CoveyTownController know that the
