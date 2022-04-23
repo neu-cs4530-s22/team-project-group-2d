@@ -33,24 +33,28 @@ describe('BulletinBoard', () => {
     expect(bulletinBoard2.posts[0].title).toBe('post3');
   });
   it('sorts the bulletin posts newest to oldest', () => {
+    jest.useFakeTimers('modern');
+    jest.setSystemTime(new Date(2022, 3, 1));
     const post1 = createBulletinPost('post1');
     bulletinBoard.addPost(post1);
 
+    jest.setSystemTime(new Date(2022, 3, 2));
     const post2 = createBulletinPost('post2');
     bulletinBoard.addPost(post2);
 
+    jest.setSystemTime(new Date(2022, 3, 3));
     const post3 = createBulletinPost('post3');
     bulletinBoard.addPost(post3);
 
     expect(bulletinBoard.posts.length).toBe(3);
     bulletinBoard.sortPostsByTime();
     const { posts } = bulletinBoard;
-    expect(posts[0].title).toBe('post1');
+    expect(posts[0].title).toBe('post3');
     expect(posts[1].title).toBe('post2');
-    expect(posts[2].title).toBe('post3');
+    expect(posts[2].title).toBe('post1');
 
-    expect(posts[0].createdAt.getTime()).toBeLessThanOrEqual(posts[1].createdAt.getTime());
-    expect(posts[1].createdAt.getTime()).toBeLessThanOrEqual(posts[2].createdAt.getTime());
+    expect(posts[0].createdAt.getTime()).toBeGreaterThan(posts[1].createdAt.getTime());
+    expect(posts[1].createdAt.getTime()).toBeGreaterThan(posts[2].createdAt.getTime());
   });
 });
 
