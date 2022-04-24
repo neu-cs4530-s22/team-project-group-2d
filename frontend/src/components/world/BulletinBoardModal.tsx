@@ -67,7 +67,7 @@ export default function BulletinBoardModal({
           <ModalCloseButton />
           <ModalBody>
             {bulletinPosts.map(post => <BulletinPost key={post.id} post={post} />)}
-            {bulletinPosts.length === 0 && <Text>It seems like there aren&apos;t any post on the Bulletin Board yet. Add your own by clicking the Write a Post button. </Text>}
+            {bulletinPosts.length === 0 && <Text>It seems like there aren&apos;t any posts on the Bulletin Board yet. Add your own by clicking the Write a Post button. </Text>}
           </ModalBody>
           <ModalFooter>
             <Button
