@@ -22,7 +22,10 @@ type BulletinBoardModalProps = {
   closeModal: () => void;
 };
 
-
+/**
+ * Modal representing the Bulletin Board of a town. Displays all posts of the current town and allows users to create
+ * new posts. If no posts exist, a placeholder message appears.
+ */
 export default function BulletinBoardModal({
   isOpen,
   closeModal,
@@ -45,6 +48,7 @@ export default function BulletinBoardModal({
     return <></>;
   }, [openCreatePost, setOpenCreatePost]);
 
+  // filter posts to only show posts of the current town
   const bulletinPosts = posts.filter(post => post.coveyTownID === appState.currentTownID);
 
   return (
