@@ -242,7 +242,7 @@ export default class CoveyTownController {
 
   /**
    * Adds a new bulletin post to this town's bulletin board. The post cannot have an empty
-   * title or author, and the coveyTownID must match the id of this town.
+   * title, text, or author, and the coveyTownID must match the id of this town.
    *
    * Notifies any CoveyTownListeners that the bulletin post has been added.
    *
@@ -279,7 +279,7 @@ export default class CoveyTownController {
    *
    * Notifies any CoveyTownListeners that posts have been deleted by passing the list of remaining posts.
    *
-   * @returns an object containing a value which indicates the number of posts that were deleted
+   * @returns the number of posts that were deleted
    */
   deleteBulletinPosts(): number {
     const dayBefore = new Date(Date.now() - 1000 * 3600 * 24);

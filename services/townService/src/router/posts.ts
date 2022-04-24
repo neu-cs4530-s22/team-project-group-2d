@@ -18,14 +18,4 @@ export default function addPostRoutes(app: Express): void {
       });
     }
   });
-
-  /**
-   * List all posts
-   */
-  app.get('/posts', express.json(), async () => {});
-
-  /**
-   * List all posts for a town
-   */
-  app.get('/posts/:townID', express.json(), async () => {});
 }
