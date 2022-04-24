@@ -127,13 +127,6 @@ export interface PostCreateResponse {
 }
 
 /**
- * Response from the server for a BulletinPost list request
- */
-export interface PostListResponse {
-  posts: BulletinPostSchema[];
-}
-
-/**
  * Envelope that wraps any response from the server
  */
 export interface ResponseEnvelope<T> {

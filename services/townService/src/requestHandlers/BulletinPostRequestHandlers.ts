@@ -5,6 +5,12 @@ import {
 } from '../client/TownsServiceClient';
 import CoveyTownsStore from '../lib/CoveyTownsStore';
 
+/**
+ * A handler to process a new bulletin post for a town's bulletin board
+ * Client makes a PostCreateRequest, this handler is executed
+ *
+ * @param requestData an object representing the post request
+ */
 export default function postCreateHandler(
   requestData: PostCreateRequest,
 ): ResponseEnvelope<PostCreateResponse> {

@@ -56,7 +56,7 @@ export default interface CoveyTownListener {
 
   /**
    * Called when a bulletin post is removed from the bulletin board
-   * @param remainingPosts the list of bulletin posts that reman after deletion
+   * @param postsToDelete the list of bulletin posts that were deleted
    */
   onBulletinPostsDeleted(postsToDelete: BulletinPostSchema[]): void;
 }
