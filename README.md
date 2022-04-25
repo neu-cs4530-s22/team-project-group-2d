@@ -54,7 +54,7 @@ After starting up the backend and the frontend using the steps above, you should
 
 ### Opening the Bulletin Board
 
-When you first enter Covey.Town, your player will spawn into the Bulletin Board activation area. Whenever your player is within the Bulletin Board activation area (indicated by the text pop-up over you character that reads `Press space to view the bulletin board`), you can open the Bulletin Board modal by pressing space.
+When you first enter Covey.Town, your player will spawn into the Bulletin Board activation area. Whenever your player is within the Bulletin Board activation area (indicated by the text pop-up over your character that reads `Press space to view the bulletin board`), you can open the Bulletin Board modal by pressing space.
 
 ### Viewing Posts
 
