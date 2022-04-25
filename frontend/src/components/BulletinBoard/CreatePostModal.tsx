@@ -23,8 +23,6 @@ type CreatePostModalProps = {
 
 /**
  * React component which is a modal presented to the user as a way to create posts for the bulletin board
- * @param param0 props for closing and opening the current post modal
- * @returns
  */
 export default function CreatePostModal({ isOpen, closeModal }: CreatePostModalProps): JSX.Element {
   const [title, setTitle] = useState<string>('');

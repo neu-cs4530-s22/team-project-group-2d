@@ -8,8 +8,6 @@ type BulletinPostProps = {
 
 /**
  * React component that represents a bulletin post in a bulletin board.
- * @param param0 prop containing info about the bulletin board that should be is rendered by this component
- * @returns
  */
 export default function BulletinPost({ post }: BulletinPostProps): JSX.Element {
   const date = new Date(post.createdAt);
