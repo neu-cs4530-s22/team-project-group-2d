@@ -58,8 +58,10 @@ class CoveyGameScene extends Phaser.Scene {
 
   private currentConversationArea?: ConversationGameObjects;
 
+  // used to track conversation area info text boxes
   private infoTextBox?: Phaser.GameObjects.Text;
 
+  // used to track bulletin board info text box
   private bulletinInfoTextBox?: Phaser.GameObjects.Text;
 
   private setNewConversation: (conv: ConversationArea) => void;
@@ -321,6 +323,7 @@ class CoveyGameScene extends Phaser.Scene {
             this.lastLocation.conversationLabel = undefined;
           }
         }
+        // reset bulletinInfoTextBox to not appear if player is outside of Bulletin Board area
         if (
           this.bulletinAreas.length > 0 &&
           !Phaser.Geom.Rectangle.Overlaps(
@@ -444,27 +447,36 @@ class CoveyGameScene extends Phaser.Scene {
     this.infoTextBox.x = this.game.scale.width / 2 - this.infoTextBox.width / 2;
 
     // bulletin board code
+
+    // select objects of type 'bulletin' from Tiled Objects to find bulletin area box
     const bulletinAreaTiledObject = map.filterObjects('Objects', obj => obj.type === 'bulletin');
+    // create Phaser Object from bulletin area Tiled Objects
     const bulletinAreaPhaserObject = map.createFromObjects(
       'Objects',
       bulletinAreaTiledObject.map(obj => ({ id: obj.id })),
     );
 
     this.physics.world.enable(bulletinAreaPhaserObject);
+    // add bulletin area Sprite Game Objects to bulletinAreas list
     bulletinAreaPhaserObject.forEach(bulletinArea => {
       this.bulletinAreas.push(bulletinArea as Phaser.GameObjects.Sprite);
     });
+    // only one bulletin area exists, so can just take first of list
     const currBulletinArea = this.bulletinAreas[0];
+    // match Tiled y to Phaser y coordinate
     currBulletinArea.y += currBulletinArea.displayHeight;
+    // add Bulletin Board title on game map
     this.add.text(
       currBulletinArea.x - currBulletinArea.displayWidth / 2,
       currBulletinArea.y - currBulletinArea.displayHeight / 2,
       'Bulletin Board',
       { color: '#FFFFFF', backgroundColor: '#000000' },
     );
+    // set color of bulletin area to be slightly shaded to differentiate from normal game tiles
     currBulletinArea.setTintFill();
     currBulletinArea.setAlpha(0.3);
 
+    // add bulletin info text box over character
     this.bulletinInfoTextBox = this.add
       .text(
         this.game.scale.width / 2,
@@ -474,7 +486,9 @@ class CoveyGameScene extends Phaser.Scene {
       )
       .setScrollFactor(0)
       .setDepth(30);
+    // default state of bulletin info text box is false until player is within bulletin area
     this.bulletinInfoTextBox.setVisible(false);
+    // scale bulletin info text box to appear at center of game screen
     this.bulletinInfoTextBox.x = this.game.scale.width / 2 - this.bulletinInfoTextBox.width / 2;
 
     const labels = map.filterObjects('Objects', obj => obj.name === 'label');
@@ -577,8 +591,10 @@ class CoveyGameScene extends Phaser.Scene {
         }
       },
     );
+    // if player exists within bulletin area, display bulletin info text box
     this.physics.add.overlap(sprite, bulletinAreaPhaserObject, () => {
       this.bulletinInfoTextBox?.setVisible(true);
+      // if player presses space, open bulletin board modal
       if (cursorKeys.space.isDown) {
         this.setBulletinBoardModalOpen(true);
       }
@@ -802,6 +818,7 @@ export default function WorldMap(): JSX.Element {
     return <></>;
   }, [video, newConversation, setNewConversation]);
 
+  // rerender game state if bulletinBoardModalOpen boolean changes
   useEffect(() => {
     if (bulletinBoardModalOpen) {
       video?.pauseGame();
@@ -810,6 +827,8 @@ export default function WorldMap(): JSX.Element {
     }
   }, [video, bulletinBoardModalOpen]);
 
+  // if bulletin board modal is open, pause game. otherwise game should unpause.
+  // BulletinBoardModal is rendered conditionally based on `bulletinBoardModalOpen` boolean
   const bulletinBoardModal = useMemo(() => {
     if (bulletinBoardModalOpen) {
       video?.pauseGame();
