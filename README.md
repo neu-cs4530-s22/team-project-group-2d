@@ -66,4 +66,4 @@ On the Bulletin Board modal, a user may click the `Write a Post` button to open 
 
 #### Editing/Deleting Posts
 
-Users are not given the ability to edit or delete posts once created. Post are deleted at midnight each night to prevent cluttering of the Bulletin Board.
+Users are not given the ability to edit or delete posts once created. Posts are deleted at midnight each night to prevent cluttering of the Bulletin Board.
