@@ -1,35 +1,42 @@
 import {
-    Button,
-    FormControl,
-    FormLabel,
-    Input,
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    ModalOverlay,
-    Textarea,
-    useToast,} from '@chakra-ui/react';
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Textarea,
+  useToast,
+} from '@chakra-ui/react';
 import React, { useCallback, useState } from 'react';
 import useCoveyAppState from '../../hooks/useCoveyAppState';
 
 type CreatePostModalProps = {
   isOpen: boolean;
-  closeModal: ()=>void;
-}
+  closeModal: () => void;
+};
 
-export default function CreatePostModal({isOpen, closeModal} : CreatePostModalProps): JSX.Element {
+/**
+ * React component which is a modal presented to the user as a way to create posts for the bulletin board
+ */
+export default function CreatePostModal({ isOpen, closeModal }: CreatePostModalProps): JSX.Element {
   const [title, setTitle] = useState<string>('');
   const [text, setText] = useState<string>('');
-  const {apiClient, userName, currentTownID} = useCoveyAppState();
-  const toast = useToast()
+  const { apiClient, userName, currentTownID } = useCoveyAppState();
+  const toast = useToast();
   const createPost = useCallback(async () => {
     if (title !== '' && text !== '') {
       try {
         await apiClient.createBulletinPost({
-          title, author: userName, text, coveyTownID: currentTownID
+          title,
+          author: userName,
+          text,
+          coveyTownID: currentTownID,
         });
         toast({
           title: 'Post Created!',
@@ -46,14 +53,18 @@ export default function CreatePostModal({isOpen, closeModal} : CreatePostModalPr
     } else {
       toast({
         title: 'Unable to create post',
-        description: "Invalid title and/or text field",
+        description: 'Invalid title and/or text field',
         status: 'error',
       });
     }
   }, [title, text, apiClient, userName, currentTownID, toast, closeModal]);
 
   return (
-    <Modal isOpen={isOpen} onClose={()=>{closeModal()}}>
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        closeModal();
+      }}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Create a new post</ModalHeader>
@@ -61,7 +72,8 @@ export default function CreatePostModal({isOpen, closeModal} : CreatePostModalPr
         <form
           onSubmit={ev => {
             ev.preventDefault();
-            createPost(); }}>
+            createPost();
+          }}>
           <ModalBody pb={6}>
             <FormControl>
               <FormLabel htmlFor='title'>Title of Post</FormLabel>
@@ -70,18 +82,20 @@ export default function CreatePostModal({isOpen, closeModal} : CreatePostModalPr
                 placeholder='Pick a title for your new post'
                 name='title'
                 value={title}
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={e => setTitle(e.target.value)}
                 maxLength={50}
               />
             </FormControl>
             <FormControl>
-              <FormLabel mt={3} htmlFor='text'>Text for Post</FormLabel>
+              <FormLabel mt={3} htmlFor='text'>
+                Text for Post
+              </FormLabel>
               <Textarea
                 id='text'
                 placeholder='Enter your text here'
                 name='text'
                 value={text}
-                onChange={(e) => setText(e.target.value)}
+                onChange={e => setText(e.target.value)}
                 maxLength={300}
               />
             </FormControl>
