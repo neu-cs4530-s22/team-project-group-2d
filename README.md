@@ -46,24 +46,24 @@ Create a `.env` file in the `frontend` directory, with the line: `REACT_APP_TOWN
 In the `frontend` directory, run `npm start` (again, you'll need to run `npm install` the very first time). After several moments (or minutes, depending on the speed of your machine), a browser will open with the frontend running locally.
 The frontend will automatically re-compile and reload in your browser if you change any files in the `frontend/src` directory.
 
-### Testing the Bulletin Board feature
+## Testing the Bulletin Board feature
 
-#### Entering Covey.Town
+### Entering Covey.Town
 
 After starting up the backend and the frontend using the steps above, you should have the frontend open in a browser at `http://localhost:3000`. You will be on the Covey.Town welcome page. Create a username of your choice. Then you can create a new town by typing in your town name and pressing Create or join an existing town by clicking Connect next to an available town. Every time you first deploy the app, you will need to create a town as none will exist.
 
-#### Opening the Bulletin Board
+### Opening the Bulletin Board
 
 When you first enter Covey.Town, your player will spawn into the Bulletin Board activation area. Whenever your player is within the Bulletin Board activation area (indicated by the text pop-up over you character that reads `Press space to view the bulletin board`), you can open the Bulletin Board modal by pressing space.
 
-#### Viewing Posts
+### Viewing Posts
 
 If there are no posts that exist within the bulletin board, the bulletin board will display a prompt indicating the board is empty and prompting users to write a post. Otherwise, each post is represented within a card in the Bulletin Board modal with the title, author, and creation date and time of the post. If more posts exist than fit within the modal, a scrollbar will appear to allow the user to scroll through posts. Posts are arranged from most recent to oldest post.
 
-#### Creating Posts
+### Creating Posts
 
 On the Bulletin Board modal, a user may click the `Write a Post` button to open the Create Post overlay. After filling in the title input field and text input field within the limits (title has a limit of 50 characters and text has a limit of 300 characters), you can press the `Create` button to submit your post. The Create Post overlay will disappear and you will be taken back to the Bulletin Board and see your post on the board.
 
-#### Editing/Deleting Posts
+### Editing/Deleting Posts
 
 Users are not given the ability to edit or delete posts once created. Posts are deleted at midnight each night to prevent cluttering of the Bulletin Board.
